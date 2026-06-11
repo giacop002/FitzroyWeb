@@ -1,0 +1,39 @@
+---
+import { getCollection } from 'astro:content';
+import PageLayout from '../../layouts/PageLayout.astro';
+import NewsFilter from '../../components/news/NewsFilter.svelte';
+
+const allNews = await getCollection('news', ({ data }) => !data.draft);
+const sorted = allNews.sort((a, b) => b.data.date.localeCompare(a.data.date));
+
+// Serialise to plain objects — Svelte props can't carry Collection entries
+const articles = sorted.map((a) => ({
+  slug:     a.slug,
+  title:    a.data.title,
+  date:     a.data.date,
+  category: a.data.category,
+  summary:  a.data.summary,
+  pdfUrl:   a.data.pdfUrl,
+  featured: a.data.featured,
+}));
+
+const categories = [
+  { value: 'exploration-results',  label: 'Exploration Results'  },
+  { value: 'corporate-update',     label: 'Corporate Update'     },
+  { value: 'financial-disclosure', label: 'Financial Disclosure' },
+  { value: 'agm',                  label: 'AGM'                  },
+  { value: 'management-change',    label: 'Management Change'    },
+  { value: 'property-update',      label: 'Property Update'      },
+  { value: 'capital-markets',      label: 'Capital Markets'      },
+];
+---
+
+<PageLayout
+  title="News"
+  description="News releases and corporate announcements from Fitzroy Minerals Ltd."
+  breadcrumbs={[{ label: 'News' }]}
+  pageHeading="News Releases"
+  pageIntro="Press releases and corporate announcements from Fitzroy Minerals Ltd. (TSX-V: FTZ | OTC: FTZFF)."
+>
+  <NewsFilter {articles} {categories} client:load />
+</PageLayout>

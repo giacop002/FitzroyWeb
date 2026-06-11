@@ -1,0 +1,33 @@
+---
+import { getCollection, render } from 'astro:content';
+import NewsLayout from '../../layouts/NewsLayout.astro';
+
+export async function getStaticPaths() {
+  const articles = await getCollection('news', ({ data }) => !data.draft);
+  return articles.map((article) => ({
+    params: { slug: article.slug },
+    props:  { article },
+  }));
+}
+
+const { article } = Astro.props;
+const { Content } = await render(article);
+
+// Related: same category or same relatedProject, excluding self, max 3
+const allNews = await getCollection('news', ({ data }) => !data.draft);
+const related = allNews
+  .filter((a) => {
+    if (a.slug === article.slug) return false;
+    return (
+      a.data.category === article.data.category ||
+      (article.data.relatedProject &&
+        a.data.relatedProject === article.data.relatedProject)
+    );
+  })
+  .sort((a, b) => b.data.date.localeCompare(a.data.date))
+  .slice(0, 3);
+---
+
+<NewsLayout {article} relatedArticles={related}>
+  <Content />
+</NewsLayout>
