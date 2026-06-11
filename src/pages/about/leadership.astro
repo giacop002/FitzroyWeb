@@ -23,6 +23,19 @@ async function renderGroup(group: typeof sorted) {
 const boardRendered = await renderGroup(board);
 const managementRendered = await renderGroup(management);
 const advisorsRendered = await renderGroup(advisors);
+
+const personJsonLd = sorted.map((p) => ({
+  '@context': 'https://schema.org',
+  '@type': 'Person',
+  name: p.data.name,
+  jobTitle: p.data.role,
+  description: p.data.shortBio,
+  worksFor: {
+    '@type': 'Organization',
+    name: 'Fitzroy Minerals Ltd.',
+    url: 'https://fitzroyminerals.com',
+  },
+}));
 ---
 
 <AboutLayout
@@ -32,6 +45,10 @@ const advisorsRendered = await renderGroup(advisors);
   pageHeading="Leadership"
   pageIntro="Our board, management team, and technical advisors bring decades of combined experience in mineral exploration, capital markets, and mine development."
 >
+
+  {personJsonLd.map((schema) => (
+    <script type="application/ld+json" set:html={JSON.stringify(schema)} />
+  ))}
 
   <!-- Board of Directors -->
   <section class="leadership-section">

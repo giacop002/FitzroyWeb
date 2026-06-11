@@ -1,0 +1,148 @@
+---
+import PageLayout from '../../layouts/PageLayout.astro';
+---
+
+<PageLayout
+  title="Privacy Policy — Fitzroy Minerals"
+  description="Privacy policy for fitzroyminerals.com. How Fitzroy Minerals collects, uses and protects personal information."
+  breadcrumbs={[{ label: 'Legal' }, { label: 'Privacy Policy' }]}
+  pageHeading="Privacy Policy"
+>
+
+  <div class="legal-body">
+
+    <section class="legal-section">
+      <h2>Introduction</h2>
+      <p>
+        You can visit <strong>fitzroyminerals.com</strong> without telling us who you are or revealing
+        any personal information about yourself. However, our site does utilise cookies and analytics
+        to improve your experience. In some circumstances, we may ask for your name, email address
+        and other information for you to access areas of the website that require registration.
+      </p>
+      <p>
+        The information you share with us when filling out forms will be used only for the intended
+        purpose to communicate and serve your needs more efficiently. We will ask you to consent to
+        allowing us to send you communications such as email newsletters and other material and
+        information that we think would be of interest to you.
+      </p>
+    </section>
+
+    <section class="legal-section">
+      <h2>Cookies</h2>
+      <p>
+        Fitzroy Minerals' website uses cookies to provide you with tailored information. Cookies are
+        very small bits of code, unique to a user, which a website can send to your browser to
+        facilitate your next visit. Cookies enable seamless travel across fitzroyminerals.com without
+        having to fill out registration forms with information you have already provided. Usage of a
+        cookie is in no way linked to any personally identifiable contact information while on
+        Fitzroy Minerals' website. Your browser can be set to notify you when a cookie is sent,
+        giving you the chance to decide whether or not to accept it.
+      </p>
+    </section>
+
+    <section class="legal-section">
+      <h2>Google Analytics</h2>
+      <p>
+        fitzroyminerals.com also uses Google Analytics, a web analytics service provided by Google,
+        Inc. ("Google"). Google Analytics uses "cookies", which are text files placed on your
+        computer, to help us analyse how users use the site so that we can improve your online
+        experience. Google Analytics sets cookies that allow us to analyse traffic on the website —
+        recognising and counting the number of visitors and seeing how visitors move around the site.
+        This helps us to improve the way our website works.
+      </p>
+      <p>
+        These cookies do not collect or track any personal data or information about you as an
+        individual. Instead, they are focused on how the website is used. We also log your domain
+        and IP address automatically when you visit this website to identify your computer and
+        approximate geographic location for the purposes of tracking usage patterns.
+      </p>
+      <p>
+        Note that most web browsers allow some control of cookies through browser settings. If you
+        delete or block our cookies, some parts of the website may not work properly. Your continued
+        use of this website confirms that you are aware of our use of cookies and have no objection
+        to this. A useful resource on how to manage cookies on different browsers is:{' '}
+        <a href="https://www.aboutcookies.org/" target="_blank" rel="noopener noreferrer">
+          aboutcookies.org ↗
+        </a>.
+      </p>
+    </section>
+
+    <section class="legal-section">
+      <h2>Personal Data</h2>
+      <p>
+        On our website, we provide an option to subscribe to our email list by filling out a form in
+        order to receive news releases or other information concerning Fitzroy Minerals Ltd. By
+        providing your email address on this form, you are consenting to receive this information.
+        However, you may withdraw your consent at any time.
+      </p>
+      <p>
+        The information we ask for on this form is simply your name (first and last) and email
+        address. Personal data that is collected through the subscribe form on our website is shared
+        with the Company's external service providers who assist us with our services and functions.
+        Personal data that is collected through this website may be stored and processed in any
+        country where Fitzroy Minerals Ltd. or its external service providers operate.
+      </p>
+      <p>
+        Another example of how you may choose to provide personal data to us is by sending us an
+        email with a question or comment. We will process the personal data that you provide through
+        this website to answer your query and, if relevant, to manage our business relationship with
+        you or your company.
+      </p>
+      <p>
+        We take all reasonable steps to protect the security of information (including personal data)
+        that is provided by you or exchanged with you through this website. Our security measures
+        include using firewalls, intrusion detection systems and virus scanning tools to protect
+        against unauthorized access. However, please be aware that there are inherent risks in
+        transmitting information over the Internet and we cannot guarantee the security of
+        information transmitted in this way.
+      </p>
+      <p>
+        This website may contain links to third-party websites. Before providing personal data to
+        third-party websites, we recommend you examine the privacy policies on those websites.
+        Fitzroy Minerals is not responsible for the privacy practices on third-party websites.
+      </p>
+      <p>
+        Fitzroy Minerals' website and linked third-party sites are not for use by children under the
+        age of 16 years and the Company does not knowingly collect, store, share or use the personal
+        data of children under 16 years. If you are under the age of 16 years, please do not provide
+        any personal data, even if prompted by the sites to do so.
+      </p>
+    </section>
+
+  </div>
+
+</PageLayout>
+
+<style>
+  .legal-body {
+    max-width: 72ch;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-10);
+  }
+
+  .legal-section h2 {
+    font-size: 1.125rem;
+    font-weight: 700;
+    color: var(--color-primary);
+    margin-bottom: var(--space-4);
+    padding-bottom: var(--space-2);
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .legal-section p {
+    font-size: 0.9375rem;
+    color: var(--color-text);
+    line-height: 1.8;
+    margin-bottom: var(--space-4);
+  }
+
+  .legal-section p:last-child { margin-bottom: 0; }
+
+  .legal-section a {
+    color: var(--color-accent);
+    text-decoration: none;
+  }
+
+  .legal-section a:hover { text-decoration: underline; }
+</style>

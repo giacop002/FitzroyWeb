@@ -5,6 +5,27 @@ import SectionHeader from '../components/ui/SectionHeader.astro';
 import Badge from '../components/ui/Badge.astro';
 import Button from '../components/ui/Button.astro';
 import { siteConfig } from '../data/siteConfig';
+import { contactInfo } from '../data/contactInfo';
+import { stockTickers } from '../data/stockTickers';
+
+const organizationJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Organization',
+  name: 'Fitzroy Minerals Ltd.',
+  url: 'https://fitzroyminerals.com',
+  description: siteConfig.defaultDescription,
+  contactPoint: {
+    '@type': 'ContactPoint',
+    email: contactInfo.headOffice.email,
+    telephone: contactInfo.headOffice.phone,
+    contactType: 'investor relations',
+  },
+  sameAs: [
+    stockTickers.tsxv.quoteUrl,
+    stockTickers.tsxv.sedarUrl,
+    stockTickers.otc.quoteUrl,
+  ],
+};
 
 const projects = await getCollection('projects', ({ data }) =>
   data.featured && data.status === 'active'
@@ -28,6 +49,7 @@ const categoryLabels: Record<string, string> = {
 ---
 
 <BaseLayout>
+  <script type="application/ld+json" set:html={JSON.stringify(organizationJsonLd)} />
   <!-- Hero -->
   <section class="hero">
     <div class="container hero-inner">

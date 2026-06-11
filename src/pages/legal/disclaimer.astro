@@ -1,0 +1,170 @@
+---
+import PageLayout from '../../layouts/PageLayout.astro';
+---
+
+<PageLayout
+  title="Legal Disclaimer — Fitzroy Minerals"
+  description="Legal disclaimer for fitzroyminerals.com. Accuracy of information, forward-looking statements, and investment decision notice for Fitzroy Minerals Ltd."
+  breadcrumbs={[{ label: 'Legal' }, { label: 'Disclaimer' }]}
+  pageHeading="Legal Disclaimer"
+>
+
+  <div class="legal-body">
+
+    <section class="legal-section">
+      <h2>Accuracy of Information</h2>
+      <p>
+        Readers are directed to the public disclosure of Fitzroy Minerals Ltd. ("Fitzroy") available
+        under Fitzroy's profile on the System for Electronic Document Analysis and Retrieval
+        ("SEDAR+") at{' '}
+        <a href="https://www.sedarplus.ca" target="_blank" rel="noopener noreferrer">
+          www.sedarplus.ca ↗
+        </a>.
+      </p>
+      <p>
+        Information on this website was believed to be accurate at the time it was posted, but may
+        be superseded by more recent public disclosure of Fitzroy. Fitzroy makes no representations
+        or warranties as to the accuracy, reliability, completeness or timeliness of the information
+        on this website.
+      </p>
+      <p>
+        Information disclosed or provided by Fitzroy in order to comply with applicable securities
+        laws is not intended to be in any way qualified, amended, modified or supplemented by the
+        information otherwise available in, through, or on this website.
+      </p>
+    </section>
+
+    <section class="legal-section">
+      <h2>Forward-Looking Information</h2>
+      <p>
+        Some of the statements contained in this website may be forward-looking statements or
+        forward-looking information within the meaning of applicable securities laws (collectively,
+        "forward-looking statements"). All statements herein, other than statements of historical
+        fact, are forward-looking statements. Although Fitzroy believes that such statements are
+        reasonable, it can give no assurance that such expectations will prove to be correct.
+      </p>
+      <p>
+        Forward-looking statements are typically identified by words such as: believe, expect,
+        anticipate, intend, estimate, postulate, and similar expressions, or are those which, by
+        their nature, refer to future events. Fitzroy cautions investors that any forward-looking
+        statements are not guarantees of future results or performance, and that actual results may
+        differ materially from those in forward-looking statements as a result of various factors,
+        including, but not limited to: capital and other costs varying significantly from estimates;
+        changes in world metal markets; changes in equity markets; timing of exploration programs
+        and results varying from expectations; delays in obtaining results; equipment failure;
+        unexpected geological conditions; local community relations; dealings with non-governmental
+        organizations; delays in operations due to permit grants; environmental and safety risks;
+        and other risks and uncertainties disclosed in Fitzroy's most recent public disclosure on
+        SEDAR+ at{' '}
+        <a href="https://www.sedarplus.ca" target="_blank" rel="noopener noreferrer">
+          www.sedarplus.ca ↗
+        </a>.
+      </p>
+      <p>
+        Any forward-looking statement speaks only as of the date on which it is made and, except as
+        may be required by applicable securities laws, Fitzroy does not assume the obligation to
+        revise or update forward-looking statements or information that may be contained in this
+        website or the documents posted on it, or to revise them to reflect the occurrence of future
+        unanticipated events.
+      </p>
+    </section>
+
+    <section class="legal-section">
+      <h2>Share Quotes and Charts</h2>
+      <p>
+        Fitzroy does not guarantee the sequence, accuracy or completeness of any share quotes
+        available on this website or other data displayed, and is not liable or responsible in any
+        way for any delays, inaccuracies or errors in any share price information or data or in the
+        transmission of any share price information or data.
+      </p>
+      <p>
+        Any share price information or data provided is not to be relied upon for any trading,
+        business or financial purpose. Fitzroy and Fitzroy's service providers are not liable or
+        responsible in any way for any damages, losses or costs arising from reliance upon this
+        information or incurred as a result of the non-performance, interruption or termination for
+        any reason whatsoever of the share price information or data.
+      </p>
+    </section>
+
+    <section class="legal-section">
+      <h2>No Solicitation</h2>
+      <p>
+        Material contained in or accessible through this website is for information purposes only
+        and is not intended to and does not constitute an offering of securities in any jurisdiction.
+        Fitzroy does not assume any duty of disclosure beyond that which is required by applicable
+        law.
+      </p>
+    </section>
+
+    <section class="legal-section">
+      <h2>Investment Decisions</h2>
+      <p>
+        Due to the technical and security risks inherent in the internet, because information on
+        this website may be out of date or superseded by more recent public disclosure of Fitzroy,
+        and because the document you access may differ from the original depending on your browser
+        software, the information set out in this website should not be used for the purpose of
+        making investment decisions with respect to Fitzroy's securities.
+      </p>
+      <p>
+        If you are contemplating trading in Fitzroy's securities, you should review Fitzroy's public
+        disclosure on SEDAR+ at{' '}
+        <a href="https://www.sedarplus.ca" target="_blank" rel="noopener noreferrer">
+          www.sedarplus.ca ↗
+        </a>{' '}
+        and contact your securities broker or financial advisor.
+      </p>
+    </section>
+
+    <section class="legal-section">
+      <h2>Privacy Statement</h2>
+      <p>
+        Fitzroy's website does not collect any personal information about visitors to this website
+        other than that which is specifically and knowingly provided by you. That personal
+        information will not be transferred to any third party unless otherwise stated at the time
+        of collection. Fitzroy does collect and maintain statistics relating to the number of visits
+        to the website, the types of browsers used and the Internet Protocol Address of the
+        originator. This information is used only for internal purposes.
+      </p>
+      <p>
+        For full details on how we handle personal data, please refer to our{' '}
+        <a href="/legal/privacy-policy">Privacy Policy</a>.
+      </p>
+    </section>
+
+  </div>
+
+</PageLayout>
+
+<style>
+  .legal-body {
+    max-width: 72ch;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-10);
+  }
+
+  .legal-section h2 {
+    font-size: 1.125rem;
+    font-weight: 700;
+    color: var(--color-primary);
+    margin-bottom: var(--space-4);
+    padding-bottom: var(--space-2);
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .legal-section p {
+    font-size: 0.9375rem;
+    color: var(--color-text);
+    line-height: 1.8;
+    margin-bottom: var(--space-4);
+  }
+
+  .legal-section p:last-child { margin-bottom: 0; }
+
+  .legal-section a {
+    color: var(--color-accent);
+    text-decoration: none;
+  }
+
+  .legal-section a:hover { text-decoration: underline; }
+</style>
