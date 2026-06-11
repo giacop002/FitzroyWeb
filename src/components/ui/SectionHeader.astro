@@ -1,0 +1,67 @@
+---
+interface Props {
+  title: string;
+  subtitle?: string;
+  ctaLabel?: string;
+  ctaHref?: string;
+  align?: 'left' | 'center';
+}
+
+const { title, subtitle, ctaLabel, ctaHref, align = 'left' } = Astro.props;
+---
+
+<div class:list={['section-header', `section-header--${align}`]}>
+  <div class="section-header__text">
+    <h2 class="section-header__title">{title}</h2>
+    {subtitle && <p class="section-header__subtitle">{subtitle}</p>}
+  </div>
+  {ctaLabel && ctaHref && (
+    <a href={ctaHref} class="section-header__cta">
+      {ctaLabel} <span aria-hidden="true">→</span>
+    </a>
+  )}
+</div>
+
+<style>
+  .section-header {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: var(--space-4);
+    margin-bottom: var(--space-8);
+    flex-wrap: wrap;
+  }
+
+  .section-header--center {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .section-header__title {
+    font-size: clamp(1.5rem, 3vw, 2rem);
+    color: var(--color-primary);
+  }
+
+  .section-header__subtitle {
+    margin-top: var(--space-2);
+    font-size: 1.0625rem;
+    color: var(--color-text-muted);
+    max-width: 560px;
+    line-height: 1.6;
+  }
+
+  .section-header--center .section-header__subtitle { margin-inline: auto; }
+
+  .section-header__cta {
+    font-size: 0.9375rem;
+    font-weight: 600;
+    color: var(--color-accent);
+    text-decoration: none;
+    white-space: nowrap;
+    transition: color 0.15s;
+    flex-shrink: 0;
+  }
+
+  .section-header__cta:hover { color: var(--color-accent-light); }
+</style>

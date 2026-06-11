@@ -1,32 +1,387 @@
 ---
 import { getCollection } from 'astro:content';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import SectionHeader from '../components/ui/SectionHeader.astro';
+import Badge from '../components/ui/Badge.astro';
+import Button from '../components/ui/Button.astro';
 import { siteConfig } from '../data/siteConfig';
 
-const projects = await getCollection('projects', ({ data }) => data.featured && data.status === 'active');
-const news = await getCollection('news', ({ data }) => !data.draft);
-const recentNews = news.sort((a, b) => b.data.date.localeCompare(a.data.date)).slice(0, 3);
+const projects = await getCollection('projects', ({ data }) =>
+  data.featured && data.status === 'active'
+);
+const sortedProjects = projects.sort((a, b) => a.data.order - b.data.order);
+
+const allNews = await getCollection('news', ({ data }) => !data.draft);
+const recentNews = allNews
+  .sort((a, b) => b.data.date.localeCompare(a.data.date))
+  .slice(0, 3);
+
+const categoryLabels: Record<string, string> = {
+  'exploration-results': 'Exploration Results',
+  'corporate-update': 'Corporate Update',
+  'financial-disclosure': 'Financial Disclosure',
+  'agm': 'AGM',
+  'management-change': 'Management Change',
+  'property-update': 'Property Update',
+  'capital-markets': 'Capital Markets',
+};
 ---
 
-<!doctype html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>{siteConfig.defaultTitle}</title>
-    <meta name="description" content={siteConfig.defaultDescription} />
-  </head>
-  <body>
-    <h1>{siteConfig.siteName}</h1>
-    <p>{siteConfig.defaultDescription}</p>
+<BaseLayout>
+  <!-- Hero -->
+  <section class="hero">
+    <div class="container hero-inner">
+      <div class="hero-content">
+        <p class="hero-eyebrow">TSX-V: FTZ &nbsp;|&nbsp; OTC: FTZFF</p>
+        <h1 class="hero-headline">
+          Copper &amp; Gold<br />Exploration in<br />Chile and Argentina
+        </h1>
+        <p class="hero-sub">
+          The world needs more copper mines. Fitzroy is focused on shallow
+          exploration projects with good grade, simple metallurgy and
+          infrastructure advantages.
+        </p>
+        <div class="hero-actions">
+          <Button label="View Projects" href="/projects" size="lg" />
+          <Button label="Latest Presentation" href="/investors/presentations" variant="outline" size="lg" />
+        </div>
+      </div>
+    </div>
+  </section>
 
-    <h2>Featured Projects ({projects.length})</h2>
-    <ul>
-      {projects.map((p) => <li>{p.data.title} — {p.data.stage}</li>)}
-    </ul>
+  <!-- Company Thesis -->
+  <section class="thesis">
+    <div class="container">
+      <div class="thesis-grid">
+        {siteConfig.thesis.map((pillar) => (
+          <div class="thesis-card">
+            <h3 class="thesis-card__title">{pillar.title}</h3>
+            <p class="thesis-card__desc">{pillar.description}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
 
-    <h2>Recent News ({recentNews.length})</h2>
-    <ul>
-      {recentNews.map((n) => <li>{n.data.date} — {n.data.title}</li>)}
-    </ul>
-  </body>
-</html>
+  <!-- Featured Projects -->
+  <section class="section">
+    <div class="container">
+      <SectionHeader
+        title="Our Projects"
+        subtitle="Shallow copper-gold porphyry targets with infrastructure advantages in Chile and Argentina."
+        ctaLabel="All Projects"
+        ctaHref="/projects"
+      />
+      <div class="projects-grid">
+        {sortedProjects.map((project) => (
+          <a href={`/projects/${project.slug}`} class="project-card">
+            <div class="project-card__img-wrap">
+              <div class="project-card__img-placeholder" aria-hidden="true"></div>
+            </div>
+            <div class="project-card__body">
+              <div class="project-card__meta">
+                <Badge label={project.data.stage.replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase())} variant={project.data.stage} />
+                <span class="project-card__country">{project.data.country === 'chile' ? '🇨🇱 Chile' : '🇦🇷 Argentina'}</span>
+              </div>
+              <h3 class="project-card__title">{project.data.title}</h3>
+              <p class="project-card__region">{project.data.region}</p>
+              <ul class="project-card__highlights">
+                {project.data.highlights.slice(0, 2).map((h) => (
+                  <li>{h}</li>
+                ))}
+              </ul>
+            </div>
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Recent News -->
+  <section class="section section--alt">
+    <div class="container">
+      <SectionHeader
+        title="Recent News"
+        ctaLabel="All News"
+        ctaHref="/news"
+      />
+      <div class="news-list">
+        {recentNews.map((article) => (
+          <a href={`/news/${article.slug}`} class="news-item">
+            <div class="news-item__date">
+              {new Date(article.data.date + 'T12:00:00').toLocaleDateString('en-CA', {
+                year: 'numeric', month: 'short', day: 'numeric'
+              })}
+            </div>
+            <div class="news-item__body">
+              <Badge
+                label={categoryLabels[article.data.category] ?? article.data.category}
+                variant={article.data.category}
+              />
+              <h3 class="news-item__title">{article.data.title}</h3>
+              <p class="news-item__summary">{article.data.summary}</p>
+            </div>
+            <span class="news-item__arrow" aria-hidden="true">→</span>
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Investors CTA -->
+  <section class="section investors-cta">
+    <div class="container investors-cta__inner">
+      <div>
+        <h2 class="investors-cta__title">Investor Relations</h2>
+        <p class="investors-cta__sub">
+          Access presentations, financial reports, technical documents, and stock information.
+        </p>
+      </div>
+      <div class="investors-cta__actions">
+        <Button label="Investor Hub" href="/investors" size="lg" />
+        <Button label="Share Structure" href="/investors/share-structure" variant="outline" size="lg" />
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  /* ── Hero ──────────────────────────────────────────────────────────────── */
+  .hero {
+    background: var(--color-primary);
+    color: var(--color-text-inverse);
+    padding-block: var(--space-24);
+    min-height: 520px;
+    display: flex;
+    align-items: center;
+  }
+
+  .hero-inner { max-width: 700px; }
+
+  .hero-eyebrow {
+    font-size: 0.8125rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--color-accent);
+    margin-bottom: var(--space-4);
+  }
+
+  .hero-headline {
+    font-size: clamp(2.25rem, 6vw, 3.75rem);
+    font-weight: 800;
+    color: #ffffff;
+    line-height: 1.1;
+    margin-bottom: var(--space-5);
+    letter-spacing: -0.02em;
+  }
+
+  .hero-sub {
+    font-size: 1.125rem;
+    color: rgba(255,255,255,0.72);
+    line-height: 1.7;
+    max-width: 560px;
+    margin-bottom: var(--space-8);
+  }
+
+  .hero-actions { display: flex; gap: var(--space-4); flex-wrap: wrap; }
+
+  /* ── Thesis ────────────────────────────────────────────────────────────── */
+  .thesis {
+    background: var(--color-accent);
+    padding-block: var(--space-10);
+  }
+
+  .thesis-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--space-1);
+  }
+
+  .thesis-card {
+    padding: var(--space-6);
+    background: rgba(255,255,255,0.12);
+    border-radius: var(--radius);
+  }
+
+  .thesis-card__title {
+    font-size: 1rem;
+    font-weight: 700;
+    color: #ffffff;
+    margin-bottom: var(--space-2);
+  }
+
+  .thesis-card__desc {
+    font-size: 0.875rem;
+    color: rgba(255,255,255,0.82);
+    line-height: 1.6;
+  }
+
+  /* ── Sections ──────────────────────────────────────────────────────────── */
+  .section { padding-block: var(--space-16); }
+  .section--alt { background: var(--color-bg-alt); }
+
+  /* ── Projects ──────────────────────────────────────────────────────────── */
+  .projects-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: var(--space-6);
+  }
+
+  .project-card {
+    display: flex;
+    flex-direction: column;
+    text-decoration: none;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    background: var(--color-bg);
+    transition: box-shadow 0.2s, transform 0.2s;
+  }
+
+  .project-card:hover {
+    box-shadow: var(--shadow-lg);
+    transform: translateY(-2px);
+  }
+
+  .project-card__img-wrap { aspect-ratio: 16/9; overflow: hidden; }
+
+  .project-card__img-placeholder {
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, var(--color-primary) 0%, #1e3a5f 100%);
+  }
+
+  .project-card__body { padding: var(--space-5); flex: 1; display: flex; flex-direction: column; gap: var(--space-2); }
+
+  .project-card__meta { display: flex; align-items: center; justify-content: space-between; gap: var(--space-2); }
+
+  .project-card__country { font-size: 0.8125rem; color: var(--color-text-muted); }
+
+  .project-card__title {
+    font-size: 1.125rem;
+    color: var(--color-primary);
+    margin-top: var(--space-1);
+  }
+
+  .project-card__region { font-size: 0.8125rem; color: var(--color-text-muted); }
+
+  .project-card__highlights {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+    margin-top: var(--space-2);
+  }
+
+  .project-card__highlights li {
+    font-size: 0.8125rem;
+    color: var(--color-text-muted);
+    padding-left: var(--space-4);
+    position: relative;
+    line-height: 1.5;
+  }
+
+  .project-card__highlights li::before {
+    content: '—';
+    position: absolute;
+    left: 0;
+    color: var(--color-accent);
+  }
+
+  /* ── News ──────────────────────────────────────────────────────────────── */
+  .news-list { display: flex; flex-direction: column; gap: var(--space-1); }
+
+  .news-item {
+    display: grid;
+    grid-template-columns: 120px 1fr auto;
+    gap: var(--space-6);
+    align-items: start;
+    padding: var(--space-5);
+    text-decoration: none;
+    border-radius: var(--radius);
+    transition: background 0.15s;
+  }
+
+  .news-item:hover { background: var(--color-bg); }
+
+  .news-item__date {
+    font-size: 0.8125rem;
+    color: var(--color-text-muted);
+    padding-top: 0.2em;
+    flex-shrink: 0;
+  }
+
+  .news-item__body { display: flex; flex-direction: column; gap: var(--space-2); }
+
+  .news-item__title {
+    font-size: 1rem;
+    color: var(--color-primary);
+    line-height: 1.4;
+  }
+
+  .news-item__summary {
+    font-size: 0.875rem;
+    color: var(--color-text-muted);
+    line-height: 1.6;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .news-item__arrow {
+    color: var(--color-accent);
+    font-size: 1.25rem;
+    align-self: center;
+    opacity: 0;
+    transition: opacity 0.15s;
+  }
+
+  .news-item:hover .news-item__arrow { opacity: 1; }
+
+  /* ── Investors CTA ─────────────────────────────────────────────────────── */
+  .investors-cta {
+    background: var(--color-primary);
+    color: var(--color-text-inverse);
+    padding-block: var(--space-16);
+  }
+
+  .investors-cta__inner {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: var(--space-8);
+    flex-wrap: wrap;
+  }
+
+  .investors-cta__title {
+    font-size: clamp(1.5rem, 3vw, 2rem);
+    color: #ffffff;
+    margin-bottom: var(--space-3);
+  }
+
+  .investors-cta__sub {
+    color: rgba(255,255,255,0.7);
+    font-size: 1rem;
+    max-width: 480px;
+    line-height: 1.6;
+  }
+
+  .investors-cta__actions { display: flex; gap: var(--space-4); flex-wrap: wrap; }
+
+  /* ── Responsive ────────────────────────────────────────────────────────── */
+  @media (max-width: 768px) {
+    .thesis-grid { grid-template-columns: 1fr; gap: var(--space-3); }
+
+    .news-item {
+      grid-template-columns: 1fr;
+      gap: var(--space-2);
+    }
+
+    .news-item__date { font-size: 0.75rem; }
+    .news-item__arrow { display: none; }
+
+    .investors-cta__inner { flex-direction: column; align-items: flex-start; }
+  }
+</style>

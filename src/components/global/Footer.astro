@@ -1,0 +1,190 @@
+---
+import { getCollection } from 'astro:content';
+import ExternalLink from '../ui/ExternalLink.astro';
+import { siteConfig } from '../../data/siteConfig';
+import { contactInfo } from '../../data/contactInfo';
+
+const projects = await getCollection('projects', ({ data }) => data.status === 'active');
+const sortedProjects = projects.sort((a, b) => a.data.order - b.data.order);
+
+const year = new Date().getFullYear();
+---
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-grid">
+
+      <!-- Column 1: Company -->
+      <div class="footer-col">
+        <p class="footer-brand">{siteConfig.siteName}</p>
+        <p class="footer-tagline">
+          Copper &amp; gold exploration in Chile and Argentina.
+        </p>
+        <address class="footer-address">
+          {contactInfo.headOffice.address}<br />
+          {contactInfo.headOffice.city}, {contactInfo.headOffice.province} {contactInfo.headOffice.postalCode}<br />
+          {contactInfo.headOffice.country}
+        </address>
+        <nav aria-label="Company links">
+          <ul class="footer-links" role="list">
+            <li><a href="/about">About</a></li>
+            <li><a href="/about/leadership">Leadership</a></li>
+            <li><a href="/about/corporate">Corporate Directory</a></li>
+            <li><a href="/contact">Contact</a></li>
+          </ul>
+        </nav>
+      </div>
+
+      <!-- Column 2: Projects -->
+      <div class="footer-col">
+        <p class="footer-col-heading">Projects</p>
+        <nav aria-label="Projects links">
+          <ul class="footer-links" role="list">
+            {sortedProjects.map((p) => (
+              <li><a href={`/projects/${p.slug}`}>{p.data.title}</a></li>
+            ))}
+            <li><a href="/projects" class="footer-link-all">All Projects →</a></li>
+          </ul>
+        </nav>
+      </div>
+
+      <!-- Column 3: Investors -->
+      <div class="footer-col">
+        <p class="footer-col-heading">Investors</p>
+        <nav aria-label="Investor relations links">
+          <ul class="footer-links" role="list">
+            <li><a href="/investors/stock">Stock Information</a></li>
+            <li><a href="/investors/presentations">Presentations</a></li>
+            <li><a href="/investors/financials">Financials</a></li>
+            <li><a href="/investors/technical-reports">Technical Reports</a></li>
+            <li><a href="/investors/agm">AGM</a></li>
+            <li><a href="/investors/share-structure">Share Structure</a></li>
+          </ul>
+        </nav>
+      </div>
+
+      <!-- Column 4: Legal & Media -->
+      <div class="footer-col">
+        <p class="footer-col-heading">Media &amp; Legal</p>
+        <nav aria-label="Media and legal links">
+          <ul class="footer-links" role="list">
+            <li><a href="/news">News</a></li>
+            <li><a href="/investors/media">Media &amp; Research</a></li>
+            <li><a href="/legal/privacy-policy">Privacy Policy</a></li>
+            <li><a href="/legal/disclaimer">Disclaimer</a></li>
+            <li>
+              <ExternalLink href="https://www.sedarplus.ca/" label="SEDAR+" />
+            </li>
+          </ul>
+        </nav>
+      </div>
+
+    </div>
+
+    <div class="footer-bottom">
+      <p class="footer-copyright">
+        &copy; {year} {siteConfig.siteName}. All rights reserved.
+      </p>
+      <p class="footer-exchange">
+        TSX-V: FTZ &nbsp;|&nbsp; OTC: FTZFF
+      </p>
+    </div>
+  </div>
+</footer>
+
+<style>
+  .site-footer {
+    background: var(--color-primary-dark);
+    color: rgba(255, 255, 255, 0.7);
+    padding-block: var(--space-16) var(--space-8);
+    margin-top: auto;
+  }
+
+  .footer-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 1fr;
+    gap: var(--space-8);
+    padding-bottom: var(--space-10);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  .footer-brand {
+    font-size: 1rem;
+    font-weight: 700;
+    color: #ffffff;
+    margin-bottom: var(--space-2);
+  }
+
+  .footer-tagline {
+    font-size: 0.875rem;
+    line-height: 1.5;
+    margin-bottom: var(--space-4);
+    color: rgba(255, 255, 255, 0.55);
+  }
+
+  .footer-address {
+    font-size: 0.8125rem;
+    line-height: 1.7;
+    font-style: normal;
+    color: rgba(255, 255, 255, 0.5);
+    margin-bottom: var(--space-5);
+  }
+
+  .footer-col-heading {
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--color-accent);
+    margin-bottom: var(--space-4);
+  }
+
+  .footer-links {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+  }
+
+  .footer-links a {
+    font-size: 0.875rem;
+    color: rgba(255, 255, 255, 0.6);
+    text-decoration: none;
+    transition: color 0.15s;
+  }
+
+  .footer-links a:hover { color: #ffffff; }
+
+  .footer-link-all {
+    color: var(--color-accent) !important;
+    font-weight: 500;
+    margin-top: var(--space-1);
+  }
+
+  .footer-bottom {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: var(--space-6);
+    gap: var(--space-4);
+    flex-wrap: wrap;
+  }
+
+  .footer-copyright,
+  .footer-exchange {
+    font-size: 0.8125rem;
+    color: rgba(255, 255, 255, 0.4);
+  }
+
+  @media (max-width: 900px) {
+    .footer-grid {
+      grid-template-columns: 1fr 1fr;
+      gap: var(--space-8) var(--space-6);
+    }
+  }
+
+  @media (max-width: 480px) {
+    .footer-grid { grid-template-columns: 1fr; }
+    .footer-bottom { flex-direction: column; align-items: flex-start; }
+  }
+</style>

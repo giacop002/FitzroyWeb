@@ -1,0 +1,38 @@
+---
+interface Props {
+  href: string;
+  label: string;
+  class?: string;
+}
+
+const { href, label, class: className } = Astro.props;
+---
+
+<a
+  href={href}
+  target="_blank"
+  rel="noopener noreferrer"
+  class:list={['ext-link', className]}
+>
+  {label}
+  <span class="ext-link__icon" aria-label=" (opens in new tab)">↗</span>
+</a>
+
+<style>
+  .ext-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25em;
+    text-decoration: none;
+    color: inherit;
+    transition: color 0.15s;
+  }
+
+  .ext-link:hover { color: var(--color-accent); }
+
+  .ext-link__icon {
+    font-size: 0.8em;
+    opacity: 0.65;
+    flex-shrink: 0;
+  }
+</style>

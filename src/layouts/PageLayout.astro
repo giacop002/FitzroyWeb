@@ -1,0 +1,83 @@
+---
+import BaseLayout from './BaseLayout.astro';
+import Breadcrumbs from '../components/ui/Breadcrumbs.astro';
+
+interface BreadcrumbItem {
+  label: string;
+  href?: string;
+}
+
+interface Props {
+  title?: string;
+  description?: string;
+  ogImage?: string;
+  breadcrumbs?: BreadcrumbItem[];
+  pageHeading?: string;
+  pageIntro?: string;
+}
+
+const {
+  title,
+  description,
+  ogImage,
+  breadcrumbs,
+  pageHeading,
+  pageIntro,
+} = Astro.props;
+---
+
+<BaseLayout {title} {description} {ogImage}>
+  {breadcrumbs && breadcrumbs.length > 0 && (
+    <div class="breadcrumb-bar">
+      <div class="container">
+        <Breadcrumbs items={breadcrumbs} />
+      </div>
+    </div>
+  )}
+
+  {(pageHeading || pageIntro) && (
+    <div class="page-header">
+      <div class="container">
+        {pageHeading && <h1 class="page-heading">{pageHeading}</h1>}
+        {pageIntro && <p class="page-intro">{pageIntro}</p>}
+      </div>
+    </div>
+  )}
+
+  <div class="page-body">
+    <div class="container">
+      <slot />
+    </div>
+  </div>
+</BaseLayout>
+
+<style>
+  .breadcrumb-bar {
+    border-bottom: 1px solid var(--color-border);
+    background: var(--color-bg-alt);
+    padding-block: var(--space-3);
+  }
+
+  .page-header {
+    background: var(--color-primary);
+    color: var(--color-text-inverse);
+    padding-block: var(--space-12) var(--space-10);
+  }
+
+  .page-heading {
+    font-size: clamp(1.75rem, 4vw, 2.5rem);
+    color: var(--color-text-inverse);
+    margin-bottom: var(--space-3);
+  }
+
+  .page-intro {
+    font-size: 1.125rem;
+    color: rgba(255, 255, 255, 0.75);
+    max-width: 640px;
+    line-height: 1.7;
+  }
+
+  .page-body {
+    padding-block: var(--space-12);
+  }
+</style>

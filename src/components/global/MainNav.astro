@@ -1,0 +1,63 @@
+---
+const pathname = Astro.url.pathname;
+
+const navItems = [
+  { label: 'About',     href: '/about' },
+  { label: 'Projects',  href: '/projects' },
+  { label: 'Investors', href: '/investors' },
+  { label: 'News',      href: '/news' },
+  { label: 'Contact',   href: '/contact' },
+];
+
+function isActive(href: string) {
+  if (href === '/') return pathname === '/';
+  return pathname.startsWith(href);
+}
+---
+
+<nav aria-label="Main navigation">
+  <ul class="nav-list" role="list">
+    {navItems.map((item) => (
+      <li>
+        <a
+          href={item.href}
+          class:list={['nav-link', { 'nav-link--active': isActive(item.href) }]}
+          aria-current={isActive(item.href) ? 'page' : undefined}
+        >
+          {item.label}
+        </a>
+      </li>
+    ))}
+  </ul>
+</nav>
+
+<style>
+  .nav-list {
+    list-style: none;
+    display: flex;
+    align-items: center;
+    gap: var(--space-1);
+  }
+
+  .nav-link {
+    display: block;
+    padding: var(--space-2) var(--space-3);
+    font-size: 0.9375rem;
+    font-weight: 500;
+    color: rgba(255, 255, 255, 0.85);
+    text-decoration: none;
+    border-radius: var(--radius-sm);
+    transition: color 0.15s, background 0.15s;
+    letter-spacing: 0.01em;
+  }
+
+  .nav-link:hover,
+  .nav-link--active {
+    color: #ffffff;
+    background: rgba(255, 255, 255, 0.1);
+  }
+
+  .nav-link--active {
+    color: var(--color-accent-light);
+  }
+</style>

@@ -1,0 +1,74 @@
+---
+import MainNav from './MainNav.astro';
+import MobileMenu from './MobileMenu.svelte';
+import { siteConfig } from '../../data/siteConfig';
+---
+
+<header class="site-header">
+  <div class="container header-inner">
+    <a href="/" class="logo" aria-label={`${siteConfig.siteName} — Home`}>
+      <span class="logo-wordmark">{siteConfig.siteName}</span>
+      <span class="logo-ticker">TSX-V: FTZ | OTC: FTZFF</span>
+    </a>
+
+    <div class="desktop-nav">
+      <MainNav />
+    </div>
+
+    <div class="mobile-controls">
+      <MobileMenu pathname={Astro.url.pathname} client:load />
+    </div>
+  </div>
+</header>
+
+<style>
+  .site-header {
+    position: sticky;
+    top: 0;
+    z-index: 30;
+    height: var(--header-height);
+    background: var(--color-primary);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow: var(--shadow-sm);
+  }
+
+  .header-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 100%;
+    gap: var(--space-6);
+  }
+
+  .logo {
+    text-decoration: none;
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+    flex-shrink: 0;
+  }
+
+  .logo-wordmark {
+    font-size: 1.125rem;
+    font-weight: 700;
+    color: #ffffff;
+    letter-spacing: -0.01em;
+    line-height: 1.2;
+  }
+
+  .logo-ticker {
+    font-size: 0.6875rem;
+    color: var(--color-accent-light);
+    font-weight: 500;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+
+  .desktop-nav { display: flex; }
+  .mobile-controls { display: none; }
+
+  @media (max-width: 768px) {
+    .desktop-nav { display: none; }
+    .mobile-controls { display: flex; align-items: center; }
+  }
+</style>
