@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+Disallow: /investors/life-offering
+
+Sitemap: https://fitzroyminerals.com/sitemap-index.xml

@@ -1,0 +1,32 @@
+---
+import { getCollection } from 'astro:content';
+import { siteConfig } from '../data/siteConfig';
+
+const projects = await getCollection('projects', ({ data }) => data.featured && data.status === 'active');
+const news = await getCollection('news', ({ data }) => !data.draft);
+const recentNews = news.sort((a, b) => b.data.date.localeCompare(a.data.date)).slice(0, 3);
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{siteConfig.defaultTitle}</title>
+    <meta name="description" content={siteConfig.defaultDescription} />
+  </head>
+  <body>
+    <h1>{siteConfig.siteName}</h1>
+    <p>{siteConfig.defaultDescription}</p>
+
+    <h2>Featured Projects ({projects.length})</h2>
+    <ul>
+      {projects.map((p) => <li>{p.data.title} — {p.data.stage}</li>)}
+    </ul>
+
+    <h2>Recent News ({recentNews.length})</h2>
+    <ul>
+      {recentNews.map((n) => <li>{n.data.date} — {n.data.title}</li>)}
+    </ul>
+  </body>
+</html>
