@@ -1,0 +1,90 @@
+---
+import BaseLayout from './BaseLayout.astro';
+import Breadcrumbs from '../components/ui/Breadcrumbs.astro';
+import SubNav from '../components/global/SubNav.astro';
+
+interface BreadcrumbItem {
+  label: string;
+  href?: string;
+}
+
+interface Props {
+  title: string;
+  description?: string;
+  breadcrumbs?: BreadcrumbItem[];
+  pageHeading?: string;
+  pageIntro?: string;
+}
+
+const { title, description, breadcrumbs, pageHeading, pageIntro } = Astro.props;
+
+const subNavItems = [
+  { label: 'Overview',            href: '/about' },
+  { label: 'Leadership',          href: '/about/leadership' },
+  { label: 'Corporate Directory', href: '/about/corporate' },
+];
+
+---
+
+<BaseLayout {title} description={description}>
+  <!-- Breadcrumb bar -->
+  {breadcrumbs && (
+    <div class="breadcrumb-bar">
+      <div class="container">
+        <Breadcrumbs items={breadcrumbs} />
+      </div>
+    </div>
+  )}
+
+  <!-- Sub-navigation -->
+  <SubNav items={subNavItems} />
+
+  <!-- Page header -->
+  {pageHeading && (
+    <div class="page-header">
+      <div class="container">
+        <h1 class="page-header__heading">{pageHeading}</h1>
+        {pageIntro && <p class="page-header__intro">{pageIntro}</p>}
+      </div>
+    </div>
+  )}
+
+  <!-- Body -->
+  <div class="about-body">
+    <div class="container">
+      <slot />
+    </div>
+  </div>
+</BaseLayout>
+
+<style>
+  .breadcrumb-bar {
+    background: var(--color-bg-alt);
+    border-bottom: 1px solid var(--color-border);
+    padding-block: var(--space-3);
+  }
+
+  .page-header {
+    background: var(--color-primary);
+    padding-block: var(--space-12) var(--space-10);
+  }
+
+  .page-header__heading {
+    font-size: clamp(1.75rem, 4vw, 2.5rem);
+    color: #fff;
+    line-height: 1.15;
+    letter-spacing: -0.02em;
+  }
+
+  .page-header__intro {
+    margin-top: var(--space-3);
+    font-size: 1.0625rem;
+    color: rgba(255,255,255,0.72);
+    max-width: 60ch;
+    line-height: 1.6;
+  }
+
+  .about-body {
+    padding-block: var(--space-10) var(--space-16);
+  }
+</style>

@@ -1,0 +1,239 @@
+---
+import AboutLayout from '../../layouts/AboutLayout.astro';
+import ExternalLink from '../../components/ui/ExternalLink.astro';
+import { contactInfo } from '../../data/contactInfo';
+import { stockTickers } from '../../data/stockTickers';
+---
+
+<AboutLayout
+  title="Corporate Directory — Fitzroy Minerals"
+  description="Corporate directory for Fitzroy Minerals Ltd. Key contacts, registered office, transfer agent, and auditors."
+  breadcrumbs={[{ label: 'About', href: '/about' }, { label: 'Corporate Directory' }]}
+  pageHeading="Corporate Directory"
+  pageIntro="Key corporate contacts, registered office details, transfer agent, and professional advisors for Fitzroy Minerals Ltd."
+>
+
+  <div class="corporate-grid">
+
+    <!-- Key Contacts -->
+    <section class="corp-section">
+      <h2 class="corp-section__heading">Key Contacts</h2>
+
+      <div class="contact-cards">
+        <!-- Head Office -->
+        <div class="contact-card">
+          <p class="contact-card__label">Head Office</p>
+          <p class="contact-card__company">{contactInfo.headOffice.company}</p>
+          <address class="contact-card__address">
+            {contactInfo.headOffice.address}<br />
+            {contactInfo.headOffice.city}, {contactInfo.headOffice.province} {contactInfo.headOffice.postalCode}<br />
+            {contactInfo.headOffice.country}
+          </address>
+          <div class="contact-card__links">
+            <a href={`mailto:${contactInfo.headOffice.email}`} class="contact-link">
+              {contactInfo.headOffice.email}
+            </a>
+            <a href={`tel:${contactInfo.headOffice.phone}`} class="contact-link">
+              {contactInfo.headOffice.phone}
+            </a>
+          </div>
+        </div>
+
+        <!-- CEO -->
+        <div class="contact-card">
+          <p class="contact-card__label">{contactInfo.ceo.label}</p>
+          <p class="contact-card__company">{contactInfo.ceo.name}</p>
+          <div class="contact-card__links">
+            <a href={`mailto:${contactInfo.ceo.email}`} class="contact-link">
+              {contactInfo.ceo.email}
+            </a>
+            <a href={`tel:${contactInfo.ceo.phone}`} class="contact-link">
+              {contactInfo.ceo.phone}
+            </a>
+          </div>
+        </div>
+
+        <!-- CFO -->
+        <div class="contact-card">
+          <p class="contact-card__label">{contactInfo.cfo.label}</p>
+          <p class="contact-card__company">{contactInfo.cfo.name}</p>
+          <div class="contact-card__links">
+            <a href={`mailto:${contactInfo.cfo.email}`} class="contact-link">
+              {contactInfo.cfo.email}
+            </a>
+            <a href={`tel:${contactInfo.cfo.phone}`} class="contact-link">
+              {contactInfo.cfo.phone}
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Stock Listings -->
+    <section class="corp-section">
+      <h2 class="corp-section__heading">Stock Listings</h2>
+      <div class="contact-cards">
+        {Object.values(stockTickers).map((ticker) => (
+          <div class="contact-card">
+            <p class="contact-card__label">{ticker.exchange}</p>
+            <p class="contact-card__company ticker-symbol">{ticker.symbol}</p>
+            <p class="contact-card__detail">{ticker.country}</p>
+            <div class="contact-card__links">
+              <ExternalLink href={ticker.quoteUrl} label="View Quote ↗" class="contact-link" />
+              {ticker.sedarUrl && (
+                <ExternalLink href={ticker.sedarUrl} label="SEDAR+ Profile ↗" class="contact-link" />
+              )}
+            </div>
+          </div>
+        ))}
+      </div>
+    </section>
+
+    <!-- Transfer Agent -->
+    <section class="corp-section">
+      <h2 class="corp-section__heading">Transfer Agent</h2>
+      <div class="contact-card contact-card--full">
+        <p class="contact-card__label">{contactInfo.transferAgent.label}</p>
+        <p class="contact-card__company">{contactInfo.transferAgent.company}</p>
+        <address class="contact-card__address">
+          {contactInfo.transferAgent.address}<br />
+          {contactInfo.transferAgent.city}, {contactInfo.transferAgent.province} {contactInfo.transferAgent.postalCode}<br />
+          {contactInfo.transferAgent.country}
+        </address>
+        <div class="contact-card__links">
+          <a href={`mailto:${contactInfo.transferAgent.email}`} class="contact-link">
+            {contactInfo.transferAgent.email}
+          </a>
+          <a href={`tel:${contactInfo.transferAgent.phone}`} class="contact-link">
+            {contactInfo.transferAgent.phone}
+          </a>
+          {contactInfo.transferAgent.tollFree && (
+            <a href={`tel:${contactInfo.transferAgent.tollFree}`} class="contact-link">
+              {contactInfo.transferAgent.tollFree} (Toll Free)
+            </a>
+          )}
+          <ExternalLink href={contactInfo.transferAgent.web} label={contactInfo.transferAgent.web} class="contact-link" />
+        </div>
+      </div>
+    </section>
+
+    <!-- Auditors -->
+    <section class="corp-section">
+      <h2 class="corp-section__heading">Auditors</h2>
+      <div class="contact-card contact-card--full">
+        <p class="contact-card__label">{contactInfo.auditors.label}</p>
+        <p class="contact-card__company">{contactInfo.auditors.company}</p>
+        <p class="contact-card__detail">{contactInfo.auditors.description}</p>
+        <p class="contact-card__detail">{contactInfo.auditors.contact}</p>
+        <address class="contact-card__address">
+          {contactInfo.auditors.address}<br />
+          {contactInfo.auditors.city}, {contactInfo.auditors.province} {contactInfo.auditors.postalCode}
+        </address>
+        <div class="contact-card__links">
+          <a href={`mailto:${contactInfo.auditors.email}`} class="contact-link">
+            {contactInfo.auditors.email}
+          </a>
+          <a href={`tel:${contactInfo.auditors.phone}`} class="contact-link">
+            {contactInfo.auditors.phone}
+          </a>
+          <ExternalLink href={contactInfo.auditors.web} label={contactInfo.auditors.web} class="contact-link" />
+        </div>
+      </div>
+    </section>
+
+  </div>
+
+</AboutLayout>
+
+<style>
+  .corporate-grid {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-12);
+  }
+
+  .corp-section__heading {
+    font-size: 1.125rem;
+    font-weight: 700;
+    color: var(--color-accent);
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    padding-bottom: var(--space-3);
+    border-bottom: 2px solid var(--color-accent);
+    display: inline-block;
+    margin-bottom: var(--space-5);
+  }
+
+  .contact-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: var(--space-5);
+  }
+
+  .contact-card {
+    padding: var(--space-5);
+    background: var(--color-bg-alt);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+  }
+
+  .contact-card--full {
+    max-width: 480px;
+  }
+
+  .contact-card__label {
+    font-size: 0.6875rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    color: var(--color-accent);
+  }
+
+  .contact-card__company {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--color-primary);
+  }
+
+  .ticker-symbol {
+    font-size: 1.5rem;
+    letter-spacing: 0.03em;
+  }
+
+  .contact-card__detail {
+    font-size: 0.875rem;
+    color: var(--color-text-muted);
+    line-height: 1.5;
+  }
+
+  .contact-card__address {
+    font-size: 0.875rem;
+    color: var(--color-text-muted);
+    line-height: 1.6;
+    font-style: normal;
+  }
+
+  .contact-card__links {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+    margin-top: var(--space-1);
+  }
+
+  .contact-link,
+  :global(.contact-link) {
+    font-size: 0.875rem;
+    color: var(--color-text-muted);
+    text-decoration: none;
+    transition: color 0.15s;
+    word-break: break-all;
+  }
+
+  .contact-link:hover,
+  :global(.contact-link:hover) {
+    color: var(--color-accent);
+  }
+</style>

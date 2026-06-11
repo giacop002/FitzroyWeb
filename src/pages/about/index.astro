@@ -1,0 +1,293 @@
+---
+import { getCollection } from 'astro:content';
+import AboutLayout from '../../layouts/AboutLayout.astro';
+import PersonCard from '../../components/people/PersonCard.astro';
+import Button from '../../components/ui/Button.astro';
+import { siteConfig } from '../../data/siteConfig';
+
+const allPeople = await getCollection('people', ({ data }) => data.active !== false);
+const sorted = allPeople.sort((a, b) => a.data.order - b.data.order);
+
+// Show management team on overview (CEO + COO + CFO)
+const management = sorted.filter((p) => p.data.roleCategory === 'management');
+---
+
+<AboutLayout
+  title="About Fitzroy Minerals"
+  description="Fitzroy Minerals is a copper and gold exploration company with assets in Chile and Argentina, focused on discovery-stage targets in world-class mineral belts."
+  breadcrumbs={[{ label: 'About' }]}
+  pageHeading="About Fitzroy Minerals"
+  pageIntro="A focused copper and gold exploration company building value through disciplined asset acquisition and exploration in the Andes."
+>
+
+  <!-- Mission -->
+  <section class="about-section about-section--mission">
+    <div class="mission-block">
+      <div class="mission-text">
+        <h2 class="section-heading">Our Mission</h2>
+        <p>
+          Fitzroy Minerals Ltd. (TSX-V: FTZ | OTC: FTZFF) is a Vancouver-based exploration company focused on
+          the discovery and development of copper and gold deposits in Chile and Argentina. We operate in
+          proven mineral belts with established infrastructure, applying modern exploration techniques to
+          advance a portfolio of high-quality targets.
+        </p>
+        <p>
+          Our strategy is built around disciplined capital allocation, local expertise, and strong technical
+          capability — with the goal of creating long-term value for shareholders through meaningful exploration
+          discovery.
+        </p>
+      </div>
+      <div class="mission-stats">
+        <div class="stat">
+          <span class="stat__value">TSX-V</span>
+          <span class="stat__label">FTZ</span>
+        </div>
+        <div class="stat">
+          <span class="stat__value">OTC</span>
+          <span class="stat__label">FTZFF</span>
+        </div>
+        <div class="stat">
+          <span class="stat__value">Chile &amp; Argentina</span>
+          <span class="stat__label">Operating Jurisdictions</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Investment Thesis -->
+  <section class="about-section">
+    <h2 class="section-heading">Investment Thesis</h2>
+    <div class="thesis-grid">
+      {siteConfig.thesis.map((pillar) => (
+        <div class="thesis-card">
+          <p class="thesis-card__title">{pillar.title}</p>
+          <p class="thesis-card__body">{pillar.body}</p>
+        </div>
+      ))}
+    </div>
+  </section>
+
+  <!-- Management snapshot -->
+  <section class="about-section">
+    <div class="section-header-row">
+      <h2 class="section-heading">Management Team</h2>
+      <Button href="/about/leadership" variant="outline" size="sm">Full Team →</Button>
+    </div>
+    <div class="people-grid">
+      {management.map((person) => (
+        <PersonCard
+          name={person.data.name}
+          role={person.data.role}
+          shortBio={person.data.shortBio}
+          roleCategory={person.data.roleCategory}
+          otherRoles={person.data.otherRoles}
+        />
+      ))}
+    </div>
+  </section>
+
+  <!-- CTA row -->
+  <section class="about-section about-cta-row">
+    <a href="/projects" class="cta-card">
+      <p class="cta-card__label">Portfolio</p>
+      <p class="cta-card__title">Explore Our Projects</p>
+      <p class="cta-card__body">Copper and gold targets in Chile and Argentina at various stages of exploration.</p>
+      <span class="cta-card__arrow">→</span>
+    </a>
+    <a href="/investors" class="cta-card">
+      <p class="cta-card__label">Investors</p>
+      <p class="cta-card__title">Investor Relations</p>
+      <p class="cta-card__body">Financial reports, corporate presentations, AGM materials and stock information.</p>
+      <span class="cta-card__arrow">→</span>
+    </a>
+    <a href="/contact" class="cta-card">
+      <p class="cta-card__label">Contact</p>
+      <p class="cta-card__title">Get in Touch</p>
+      <p class="cta-card__body">Speak with our investor relations team or connect with management directly.</p>
+      <span class="cta-card__arrow">→</span>
+    </a>
+  </section>
+
+</AboutLayout>
+
+<style>
+  .about-section {
+    padding-bottom: var(--space-12);
+    border-bottom: 1px solid var(--color-border);
+    margin-bottom: var(--space-12);
+  }
+
+  .about-section:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+    padding-bottom: 0;
+  }
+
+  .section-heading {
+    font-size: 1.5rem;
+    color: var(--color-primary);
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    margin-bottom: var(--space-6);
+  }
+
+  .section-header-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: var(--space-6);
+    gap: var(--space-4);
+  }
+
+  .section-header-row .section-heading { margin-bottom: 0; }
+
+  /* Mission */
+  .mission-block {
+    display: grid;
+    grid-template-columns: 1fr 280px;
+    gap: var(--space-10);
+    align-items: start;
+  }
+
+  .mission-text p {
+    font-size: 1rem;
+    line-height: 1.8;
+    color: var(--color-text);
+    margin-bottom: var(--space-4);
+  }
+
+  .mission-text p:last-child { margin-bottom: 0; }
+
+  .mission-stats {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+  }
+
+  .stat {
+    padding: var(--space-4);
+    background: var(--color-bg-alt);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+  }
+
+  .stat__value {
+    font-size: 1.0625rem;
+    font-weight: 700;
+    color: var(--color-primary);
+  }
+
+  .stat__label {
+    font-size: 0.75rem;
+    color: var(--color-text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    font-weight: 600;
+  }
+
+  /* Thesis */
+  .thesis-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--space-5);
+  }
+
+  .thesis-card {
+    padding: var(--space-6);
+    background: var(--color-bg-alt);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius);
+    border-top: 3px solid var(--color-accent);
+  }
+
+  .thesis-card__title {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--color-primary);
+    margin-bottom: var(--space-3);
+  }
+
+  .thesis-card__body {
+    font-size: 0.875rem;
+    color: var(--color-text-muted);
+    line-height: 1.65;
+  }
+
+  /* People grid */
+  .people-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--space-5);
+  }
+
+  /* CTA row */
+  .about-cta-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--space-5);
+  }
+
+  .cta-card {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+    padding: var(--space-6);
+    background: var(--color-bg-alt);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius);
+    text-decoration: none;
+    transition: border-color 0.15s, box-shadow 0.15s;
+    position: relative;
+  }
+
+  .cta-card:hover {
+    border-color: var(--color-accent);
+    box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+  }
+
+  .cta-card__label {
+    font-size: 0.6875rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    color: var(--color-accent);
+  }
+
+  .cta-card__title {
+    font-size: 1.0625rem;
+    font-weight: 700;
+    color: var(--color-primary);
+  }
+
+  .cta-card__body {
+    font-size: 0.875rem;
+    color: var(--color-text-muted);
+    line-height: 1.6;
+  }
+
+  .cta-card__arrow {
+    font-size: 1.125rem;
+    color: var(--color-accent);
+    margin-top: auto;
+    padding-top: var(--space-2);
+    transition: transform 0.15s;
+  }
+
+  .cta-card:hover .cta-card__arrow { transform: translateX(4px); }
+
+  @media (max-width: 900px) {
+    .mission-block { grid-template-columns: 1fr; }
+    .mission-stats { flex-direction: row; flex-wrap: wrap; }
+    .stat { flex: 1; min-width: 140px; }
+    .thesis-grid { grid-template-columns: 1fr; }
+    .people-grid { grid-template-columns: repeat(2, 1fr); }
+    .about-cta-row { grid-template-columns: 1fr; }
+  }
+
+  @media (max-width: 640px) {
+    .people-grid { grid-template-columns: 1fr; }
+  }
+</style>

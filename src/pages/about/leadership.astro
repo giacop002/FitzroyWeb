@@ -1,0 +1,109 @@
+---
+import { getCollection, render } from 'astro:content';
+import AboutLayout from '../../layouts/AboutLayout.astro';
+import PersonBio from '../../components/people/PersonBio.astro';
+
+const allPeople = await getCollection('people', ({ data }) => data.active !== false);
+const sorted = allPeople.sort((a, b) => a.data.order - b.data.order);
+
+const board = sorted.filter((p) => p.data.roleCategory === 'board');
+const management = sorted.filter((p) => p.data.roleCategory === 'management');
+const advisors = sorted.filter((p) => p.data.roleCategory === 'technical-advisor');
+
+// Render all bios
+async function renderGroup(group: typeof sorted) {
+  return Promise.all(
+    group.map(async (person) => {
+      const { Content } = await render(person);
+      return { person, Content };
+    })
+  );
+}
+
+const boardRendered = await renderGroup(board);
+const managementRendered = await renderGroup(management);
+const advisorsRendered = await renderGroup(advisors);
+---
+
+<AboutLayout
+  title="Leadership — Fitzroy Minerals"
+  description="Board of Directors, Management Team, and Technical Advisors of Fitzroy Minerals Ltd. (TSX-V: FTZ)"
+  breadcrumbs={[{ label: 'About', href: '/about' }, { label: 'Leadership' }]}
+  pageHeading="Leadership"
+  pageIntro="Our board, management team, and technical advisors bring decades of combined experience in mineral exploration, capital markets, and mine development."
+>
+
+  <!-- Board of Directors -->
+  <section class="leadership-section">
+    <h2 class="group-heading">Board of Directors</h2>
+    <div class="bio-list">
+      {boardRendered.map(({ person, Content }) => (
+        <PersonBio
+          name={person.data.name}
+          role={person.data.role}
+          roleCategory={person.data.roleCategory}
+          otherRoles={person.data.otherRoles}
+        >
+          <Content />
+        </PersonBio>
+      ))}
+    </div>
+  </section>
+
+  <!-- Management Team -->
+  <section class="leadership-section">
+    <h2 class="group-heading">Management Team</h2>
+    <div class="bio-list">
+      {managementRendered.map(({ person, Content }) => (
+        <PersonBio
+          name={person.data.name}
+          role={person.data.role}
+          roleCategory={person.data.roleCategory}
+          otherRoles={person.data.otherRoles}
+        >
+          <Content />
+        </PersonBio>
+      ))}
+    </div>
+  </section>
+
+  <!-- Technical Advisors -->
+  <section class="leadership-section">
+    <h2 class="group-heading">Technical Advisors</h2>
+    <div class="bio-list">
+      {advisorsRendered.map(({ person, Content }) => (
+        <PersonBio
+          name={person.data.name}
+          role={person.data.role}
+          roleCategory={person.data.roleCategory}
+          otherRoles={person.data.otherRoles}
+        >
+          <Content />
+        </PersonBio>
+      ))}
+    </div>
+  </section>
+
+</AboutLayout>
+
+<style>
+  .leadership-section {
+    margin-bottom: var(--space-14);
+  }
+
+  .group-heading {
+    font-size: 1.125rem;
+    font-weight: 700;
+    color: var(--color-accent);
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    margin-bottom: var(--space-2);
+    padding-bottom: var(--space-3);
+    border-bottom: 2px solid var(--color-accent);
+    display: inline-block;
+  }
+
+  .bio-list {
+    margin-top: var(--space-2);
+  }
+</style>

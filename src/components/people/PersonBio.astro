@@ -1,0 +1,119 @@
+---
+interface Props {
+  name: string;
+  role: string;
+  roleCategory: string;
+  otherRoles?: string[];
+}
+
+const { name, role, otherRoles } = Astro.props;
+const initials = name
+  .split(' ')
+  .map((w) => w[0])
+  .filter(Boolean)
+  .slice(0, 2)
+  .join('');
+---
+
+<article class="person-bio">
+  <header class="person-bio__header">
+    <div class="person-bio__avatar" aria-hidden="true">{initials}</div>
+    <div class="person-bio__meta">
+      <h3 class="person-bio__name">{name}</h3>
+      <p class="person-bio__role">{role}</p>
+      {otherRoles && otherRoles.length > 0 && (
+        <ul class="person-bio__other" role="list">
+          {otherRoles.map((r) => <li>{r}</li>)}
+        </ul>
+      )}
+    </div>
+  </header>
+  <div class="person-bio__content prose">
+    <slot />
+  </div>
+</article>
+
+<style>
+  .person-bio {
+    padding: var(--space-8) 0;
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .person-bio:last-child { border-bottom: none; }
+
+  .person-bio__header {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--space-5);
+    margin-bottom: var(--space-5);
+  }
+
+  .person-bio__avatar {
+    width: 4rem;
+    height: 4rem;
+    border-radius: 50%;
+    background: var(--color-primary);
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.25rem;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    flex-shrink: 0;
+  }
+
+  .person-bio__meta { flex: 1; min-width: 0; }
+
+  .person-bio__name {
+    font-size: 1.1875rem;
+    font-weight: 700;
+    color: var(--color-primary);
+    line-height: 1.3;
+  }
+
+  .person-bio__role {
+    font-size: 0.8125rem;
+    font-weight: 600;
+    color: var(--color-accent);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-top: var(--space-1);
+  }
+
+  .person-bio__other {
+    list-style: none;
+    margin-top: var(--space-2);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+  }
+
+  .person-bio__other li {
+    font-size: 0.8125rem;
+    color: var(--color-text-muted);
+    padding-left: 0.9em;
+    position: relative;
+  }
+
+  .person-bio__other li::before {
+    content: '·';
+    position: absolute;
+    left: 0;
+    color: var(--color-accent);
+  }
+
+  /* Prose content */
+  .prose {
+    color: var(--color-text);
+    line-height: 1.8;
+    font-size: 0.9375rem;
+    max-width: 72ch;
+  }
+
+  .prose :global(p) {
+    margin-bottom: var(--space-4);
+  }
+
+  .prose :global(p:last-child) { margin-bottom: 0; }
+</style>

@@ -1,0 +1,318 @@
+---
+import PageLayout from '../layouts/PageLayout.astro';
+import ExternalLink from '../components/ui/ExternalLink.astro';
+import { contactInfo } from '../data/contactInfo';
+import { stockTickers } from '../data/stockTickers';
+---
+
+<PageLayout
+  title="Contact — Fitzroy Minerals"
+  description="Contact Fitzroy Minerals Ltd. for investor relations, media enquiries, or general information. Reach our team in Vancouver."
+  breadcrumbs={[{ label: 'Contact' }]}
+  pageHeading="Contact Us"
+  pageIntro="We welcome enquiries from investors, analysts, media, and potential business partners."
+>
+
+  <div class="contact-layout">
+
+    <!-- Left: contact cards -->
+    <div class="contact-primary">
+
+      <section class="contact-section">
+        <h2 class="contact-section__heading">Investor Relations</h2>
+        <p class="contact-section__lead">
+          For investor relations enquiries, shareholder information, or to be added to our
+          distribution list, please contact:
+        </p>
+        <div class="contact-person">
+          <div class="contact-person__name">{contactInfo.ceo.name}</div>
+          <div class="contact-person__role">{contactInfo.ceo.label}</div>
+          <div class="contact-person__links">
+            <a href={`mailto:${contactInfo.ceo.email}`} class="contact-link contact-link--primary">
+              {contactInfo.ceo.email}
+            </a>
+            <a href={`tel:${contactInfo.ceo.phone}`} class="contact-link">
+              {contactInfo.ceo.phone}
+            </a>
+          </div>
+        </div>
+      </section>
+
+      <section class="contact-section">
+        <h2 class="contact-section__heading">Financial Enquiries</h2>
+        <div class="contact-person">
+          <div class="contact-person__name">{contactInfo.cfo.name}</div>
+          <div class="contact-person__role">{contactInfo.cfo.label}</div>
+          <div class="contact-person__links">
+            <a href={`mailto:${contactInfo.cfo.email}`} class="contact-link contact-link--primary">
+              {contactInfo.cfo.email}
+            </a>
+            <a href={`tel:${contactInfo.cfo.phone}`} class="contact-link">
+              {contactInfo.cfo.phone}
+            </a>
+          </div>
+        </div>
+      </section>
+
+      <section class="contact-section">
+        <h2 class="contact-section__heading">Head Office</h2>
+        <address class="office-address">
+          <strong>{contactInfo.headOffice.company}</strong><br />
+          {contactInfo.headOffice.address}<br />
+          {contactInfo.headOffice.city}, {contactInfo.headOffice.province} {contactInfo.headOffice.postalCode}<br />
+          {contactInfo.headOffice.country}
+        </address>
+      </section>
+
+    </div>
+
+    <!-- Right: sidebar -->
+    <aside class="contact-sidebar">
+
+      <div class="sidebar-widget">
+        <p class="sidebar-widget__label">Stock Listings</p>
+        {Object.values(stockTickers).map((ticker) => (
+          <div class="ticker-row">
+            <span class="ticker-symbol">{ticker.symbol}</span>
+            <span class="ticker-exchange">{ticker.exchange}</span>
+            <ExternalLink href={ticker.quoteUrl} label="Quote ↗" class="ticker-link" />
+          </div>
+        ))}
+      </div>
+
+      <div class="sidebar-widget">
+        <p class="sidebar-widget__label">Regulatory Filings</p>
+        <ExternalLink
+          href={stockTickers.tsxv.sedarUrl}
+          label="SEDAR+ Filings ↗"
+          class="sidebar-link"
+        />
+      </div>
+
+      <div class="sidebar-widget">
+        <p class="sidebar-widget__label">Transfer Agent</p>
+        <p class="sidebar-detail">{contactInfo.transferAgent.company}</p>
+        <a href={`mailto:${contactInfo.transferAgent.email}`} class="sidebar-link">
+          {contactInfo.transferAgent.email}
+        </a>
+        <a href={`tel:${contactInfo.transferAgent.phone}`} class="sidebar-link">
+          {contactInfo.transferAgent.phone}
+        </a>
+        {contactInfo.transferAgent.tollFree && (
+          <a href={`tel:${contactInfo.transferAgent.tollFree}`} class="sidebar-link">
+            {contactInfo.transferAgent.tollFree} (toll free)
+          </a>
+        )}
+      </div>
+
+      <div class="sidebar-widget">
+        <p class="sidebar-widget__label">Quick Links</p>
+        <nav class="sidebar-links-list">
+          <a href="/investors/presentations" class="sidebar-link">Corporate Presentations</a>
+          <a href="/investors/financials" class="sidebar-link">Financial Reports</a>
+          <a href="/news" class="sidebar-link">News Releases</a>
+          <a href="/about/leadership" class="sidebar-link">Leadership Team</a>
+        </nav>
+      </div>
+
+    </aside>
+  </div>
+
+  <div class="disclaimer-note">
+    <p>
+      Fitzroy Minerals Ltd. does not provide investment advice. Information on this site is for
+      informational purposes only. Please refer to our{' '}
+      <a href="/legal/disclaimer">legal disclaimer</a> for full details.
+    </p>
+  </div>
+
+</PageLayout>
+
+<style>
+  .contact-layout {
+    display: grid;
+    grid-template-columns: 1fr 260px;
+    gap: var(--space-12);
+    align-items: start;
+    margin-bottom: var(--space-12);
+  }
+
+  .contact-section {
+    margin-bottom: var(--space-10);
+    padding-bottom: var(--space-10);
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .contact-section:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+    padding-bottom: 0;
+  }
+
+  .contact-section__heading {
+    font-size: 1.125rem;
+    font-weight: 700;
+    color: var(--color-primary);
+    margin-bottom: var(--space-4);
+  }
+
+  .contact-section__lead {
+    font-size: 0.9375rem;
+    color: var(--color-text-muted);
+    line-height: 1.65;
+    margin-bottom: var(--space-5);
+    max-width: 56ch;
+  }
+
+  .contact-person {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+  }
+
+  .contact-person__name {
+    font-size: 1.0625rem;
+    font-weight: 700;
+    color: var(--color-primary);
+  }
+
+  .contact-person__role {
+    font-size: 0.8125rem;
+    font-weight: 600;
+    color: var(--color-accent);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: var(--space-2);
+  }
+
+  .contact-person__links {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+  }
+
+  .contact-link {
+    font-size: 0.9375rem;
+    color: var(--color-text-muted);
+    text-decoration: none;
+    transition: color 0.15s;
+  }
+
+  .contact-link--primary {
+    color: var(--color-primary);
+    font-weight: 500;
+  }
+
+  .contact-link:hover { color: var(--color-accent); }
+
+  .office-address {
+    font-size: 0.9375rem;
+    color: var(--color-text);
+    line-height: 1.75;
+    font-style: normal;
+  }
+
+  /* Sidebar */
+  .contact-sidebar {
+    position: sticky;
+    top: calc(var(--header-height) + var(--space-6));
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+  }
+
+  .sidebar-widget {
+    padding: var(--space-4);
+    background: var(--color-bg-alt);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+  }
+
+  .sidebar-widget__label {
+    font-size: 0.6875rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    color: var(--color-accent);
+    margin-bottom: var(--space-1);
+  }
+
+  .ticker-row {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+  }
+
+  .ticker-symbol {
+    font-size: 0.9375rem;
+    font-weight: 700;
+    color: var(--color-primary);
+    min-width: 52px;
+  }
+
+  .ticker-exchange {
+    font-size: 0.75rem;
+    color: var(--color-text-muted);
+    flex: 1;
+  }
+
+  .ticker-link,
+  :global(.ticker-link) {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--color-accent);
+    text-decoration: none;
+  }
+
+  .sidebar-detail {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--color-primary);
+  }
+
+  .sidebar-link,
+  :global(.sidebar-link) {
+    font-size: 0.875rem;
+    color: var(--color-text-muted);
+    text-decoration: none;
+    transition: color 0.15s;
+    word-break: break-all;
+  }
+
+  .sidebar-link:hover,
+  :global(.sidebar-link:hover) { color: var(--color-accent); }
+
+  .sidebar-links-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+  }
+
+  /* Disclaimer */
+  .disclaimer-note {
+    padding: var(--space-5);
+    background: var(--color-bg-alt);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius);
+    font-size: 0.8125rem;
+    color: var(--color-text-muted);
+    line-height: 1.65;
+  }
+
+  .disclaimer-note a {
+    color: var(--color-accent);
+    text-decoration: none;
+  }
+
+  .disclaimer-note a:hover { text-decoration: underline; }
+
+  @media (max-width: 860px) {
+    .contact-layout {
+      grid-template-columns: 1fr;
+    }
+    .contact-sidebar { position: static; }
+  }
+</style>
