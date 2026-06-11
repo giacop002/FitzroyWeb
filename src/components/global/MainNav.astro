@@ -1,33 +1,131 @@
 ---
-const pathname = Astro.url.pathname;
+import { getCollection } from 'astro:content';
 
-const navItems = [
-  { label: 'About',     href: '/about' },
-  { label: 'Projects',  href: '/projects' },
-  { label: 'Investors', href: '/investors' },
-  { label: 'News',      href: '/news' },
-  { label: 'Contact',   href: '/contact' },
-];
+const pathname = Astro.url.pathname;
 
 function isActive(href: string) {
   if (href === '/') return pathname === '/';
   return pathname.startsWith(href);
 }
+
+const projects = await getCollection('projects', ({ data }) => data.status === 'active');
+const sortedProjects = projects.sort((a, b) => a.data.order - b.data.order);
+
+const aboutItems = [
+  { label: 'Overview',            href: '/about' },
+  { label: 'Leadership',          href: '/about/leadership' },
+  { label: 'Corporate Directory', href: '/about/corporate' },
+];
+
+const investorsItems = [
+  { label: 'Stock Information',  href: '/investors/stock' },
+  { label: 'Share Structure',    href: '/investors/share-structure' },
+  { label: 'Presentations',      href: '/investors/presentations' },
+  { label: 'Financials',         href: '/investors/financials' },
+  { label: 'Technical Reports',  href: '/investors/technical-reports' },
+  { label: 'AGM',                href: '/investors/agm' },
+  { label: 'Media & Research',   href: '/investors/media' },
+  { label: 'LIFE Offering',      href: '/investors/life-offering' },
+];
 ---
 
 <nav aria-label="Main navigation">
   <ul class="nav-list" role="list">
-    {navItems.map((item) => (
-      <li>
-        <a
-          href={item.href}
-          class:list={['nav-link', { 'nav-link--active': isActive(item.href) }]}
-          aria-current={isActive(item.href) ? 'page' : undefined}
-        >
-          {item.label}
-        </a>
-      </li>
-    ))}
+
+    <!-- About (with dropdown) -->
+    <li class="nav-item nav-item--dropdown">
+      <a
+        href="/about"
+        class:list={['nav-link', { 'nav-link--active': isActive('/about') }]}
+        aria-current={isActive('/about') ? 'page' : undefined}
+      >
+        About
+      </a>
+      <ul class="nav-dropdown" role="list">
+        <div class="nav-dropdown-inner">
+          {aboutItems.map((item) => (
+            <li>
+              <a href={item.href} class="nav-dropdown__link">
+                {item.label}
+              </a>
+            </li>
+          ))}
+        </div>
+      </ul>
+    </li>
+
+    <!-- Projects (with dropdown) -->
+    <li class="nav-item nav-item--dropdown">
+      <a
+        href="/projects"
+        class:list={['nav-link', { 'nav-link--active': isActive('/projects') }]}
+        aria-current={isActive('/projects') ? 'page' : undefined}
+      >
+        Projects
+      </a>
+      <ul class="nav-dropdown" role="list">
+        <div class="nav-dropdown-inner">
+          {sortedProjects.map((p) => (
+            <li>
+              <a href={`/projects/${p.slug}`} class="nav-dropdown__link">
+                {p.data.title}
+              </a>
+            </li>
+          ))}
+          <li class="nav-dropdown__divider" role="separator" aria-hidden="true" />
+          <li>
+            <a href="/projects" class="nav-dropdown__link nav-dropdown__link--all">
+              All Projects →
+            </a>
+          </li>
+        </div>
+      </ul>
+    </li>
+
+    <!-- Investors (with dropdown) -->
+    <li class="nav-item nav-item--dropdown">
+      <a
+        href="/investors"
+        class:list={['nav-link', { 'nav-link--active': isActive('/investors') }]}
+        aria-current={isActive('/investors') ? 'page' : undefined}
+      >
+        Investors
+      </a>
+      <ul class="nav-dropdown" role="list">
+        <div class="nav-dropdown-inner">
+          {investorsItems.map((item) => (
+            <li>
+              <a href={item.href} class="nav-dropdown__link">
+                {item.label}
+              </a>
+            </li>
+          ))}
+        </div>
+      </ul>
+    </li>
+
+    <!-- News (no dropdown) -->
+    <li class="nav-item">
+      <a
+        href="/news"
+        class:list={['nav-link', { 'nav-link--active': isActive('/news') }]}
+        aria-current={isActive('/news') ? 'page' : undefined}
+      >
+        News
+      </a>
+    </li>
+
+    <!-- Contact (no dropdown) -->
+    <li class="nav-item">
+      <a
+        href="/contact"
+        class:list={['nav-link', { 'nav-link--active': isActive('/contact') }]}
+        aria-current={isActive('/contact') ? 'page' : undefined}
+      >
+        Contact
+      </a>
+    </li>
+
   </ul>
 </nav>
 
@@ -39,8 +137,15 @@ function isActive(href: string) {
     gap: var(--space-1);
   }
 
+  /* ── Top-level item ───────────────────────────────────────────────────────── */
+  .nav-item {
+    position: relative;
+  }
+
   .nav-link {
-    display: block;
+    display: flex;
+    align-items: center;
+    gap: 0.25em;
     padding: var(--space-2) var(--space-3);
     font-size: 0.9375rem;
     font-weight: 500;
@@ -49,6 +154,7 @@ function isActive(href: string) {
     border-radius: var(--radius-sm);
     transition: color 0.15s, background 0.15s;
     letter-spacing: 0.01em;
+    white-space: nowrap;
   }
 
   .nav-link:hover,
@@ -59,5 +165,97 @@ function isActive(href: string) {
 
   .nav-link--active {
     color: var(--color-accent-light);
+  }
+
+  /* ── Dropdown panel ───────────────────────────────────────────────────────── */
+  /*
+   * The ul starts flush at top:100% with no gap — this makes the hover
+   * area continuous. An 8px transparent padding-top acts as the invisible
+   * bridge so diagonal mouse movement stays inside the element.
+   * The visual panel background lives on a ::before that starts below
+   * the padding, so visually there's still a small separation.
+   */
+  .nav-dropdown {
+    list-style: none;
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    min-width: 210px;
+    padding-top: 8px;   /* transparent bridge — keeps hover alive diagonally */
+    padding-bottom: 0;
+
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transition: opacity 0.15s ease, visibility 0s linear 0.15s;
+  }
+
+  /* Visual dark panel — starts after the transparent bridge */
+  .nav-dropdown-inner {
+    background: var(--color-primary-dark, #060f1c);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-lg);
+    padding: var(--space-2) 0;
+    position: relative;
+  }
+
+  /* Caret sits at the top of the inner panel */
+  .nav-dropdown-inner::before {
+    content: '';
+    position: absolute;
+    top: -7px;
+    left: 50%;
+    transform: translateX(-50%);
+    border: 7px solid transparent;
+    border-top: none;
+    border-bottom-color: rgba(255, 255, 255, 0.12);
+  }
+  .nav-dropdown-inner::after {
+    content: '';
+    position: absolute;
+    top: -6px;
+    left: 50%;
+    transform: translateX(-50%);
+    border: 6px solid transparent;
+    border-top: none;
+    border-bottom-color: var(--color-primary-dark, #060f1c);
+  }
+
+  /* Show on hover */
+  .nav-item--dropdown:hover > .nav-dropdown,
+  .nav-item--dropdown:focus-within > .nav-dropdown {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+    transition: opacity 0.15s ease, visibility 0s;
+  }
+
+  .nav-dropdown__link {
+    display: block;
+    padding: var(--space-2) var(--space-4);
+    font-size: 0.875rem;
+    font-weight: 400;
+    color: rgba(255, 255, 255, 0.78);
+    text-decoration: none;
+    white-space: nowrap;
+    transition: background 0.12s, color 0.12s;
+  }
+
+  .nav-dropdown__link:hover {
+    background: rgba(255, 255, 255, 0.08);
+    color: #ffffff;
+  }
+
+  .nav-dropdown__link--all {
+    font-weight: 600;
+    color: var(--color-accent-light, #9ed8ff);
+  }
+
+  .nav-dropdown__divider {
+    height: 1px;
+    background: rgba(255, 255, 255, 0.1);
+    margin: var(--space-1) 0;
   }
 </style>

@@ -21,13 +21,15 @@
 
   let active = $state('all');
 
-  const filtered = $derived(
-    active === 'all'
-      ? articles
-      : articles.filter((a) => a.category === active)
-  );
-
   const categoryLabels = Object.fromEntries(categories.map((c) => [c.value, c.label]));
+
+  function getFiltered() {
+    return active === 'all' ? articles : articles.filter((a) => a.category === active);
+  }
+
+  function getFilteredCount() {
+    return getFiltered().length;
+  }
 </script>
 
 <div class="news-filter">
@@ -56,16 +58,16 @@
 
   <!-- Results count -->
   <p class="filter-results" aria-live="polite">
-    {filtered.length} {filtered.length === 1 ? 'release' : 'releases'}
+    {getFilteredCount()} {getFilteredCount() === 1 ? 'release' : 'releases'}
     {active !== 'all' ? `in ${categoryLabels[active] ?? active}` : ''}
   </p>
 
   <!-- Article list -->
-  {#if filtered.length > 0}
+  {#if getFilteredCount() > 0}
     <ul class="news-list" role="list">
-      {#each filtered as article (article.slug)}
+      {#each getFiltered() as article (article.slug)}
         <li class="news-item">
-          <a href={`/news/${article.slug}`} class="news-item__inner">
+          <div class="news-item__inner">
             <div class="news-item__date">
               {new Date(article.date + 'T12:00:00').toLocaleDateString('en-CA', {
                 year: 'numeric', month: 'short', day: 'numeric'
@@ -75,24 +77,26 @@
               <span class="news-item__badge news-item__badge--{article.category}">
                 {categoryLabels[article.category] ?? article.category}
               </span>
-              <p class="news-item__title">{article.title}</p>
+              <!-- Stretched link covers the whole card -->
+              <a href={`/news/${article.slug}`} class="news-item__title-link">
+                {article.title}
+              </a>
               <p class="news-item__summary">{article.summary}</p>
             </div>
             <div class="news-item__actions">
-              <span class="news-item__read">Read →</span>
+              <span class="news-item__read" aria-hidden="true">Read →</span>
               {#if article.pdfUrl}
                 <a
                   href={article.pdfUrl}
                   target="_blank"
                   rel="noopener noreferrer"
                   class="news-item__pdf"
-                  onclick={(e) => e.stopPropagation()}
                 >
                   PDF ↗
                 </a>
               {/if}
             </div>
-          </a>
+          </div>
         </li>
       {/each}
     </ul>
@@ -165,9 +169,9 @@
     gap: 1.5rem;
     align-items: start;
     padding: 1.25rem 0.5rem;
-    text-decoration: none;
     border-radius: 0.5rem;
     transition: background 0.15s;
+    position: relative; /* needed for stretched link */
   }
 
   .news-item__inner:hover { background: var(--color-bg-alt, #f4f6f8); }
@@ -206,12 +210,23 @@
   .news-item__badge--property-update      { background: #f0fdf4; color: #14532d; }
   .news-item__badge--capital-markets      { background: #fff7ed; color: #9a3412; }
 
-  .news-item__title {
+  /* Stretched link — covers the whole card, PDF sits above via z-index */
+  .news-item__title-link {
     font-size: 0.9375rem;
     font-weight: 600;
     color: var(--color-primary, #0a1a2e);
     line-height: 1.4;
+    text-decoration: none;
   }
+
+  .news-item__title-link::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 0.5rem;
+  }
+
+  .news-item__title-link:hover { text-decoration: none; }
 
   .news-item__summary {
     font-size: 0.875rem;
@@ -239,6 +254,10 @@
     opacity: 0;
     transition: opacity 0.15s;
     white-space: nowrap;
+    /* sits below the stretched link overlay */
+    position: relative;
+    z-index: 0;
+    pointer-events: none;
   }
 
   .news-item__inner:hover .news-item__read { opacity: 1; }
@@ -254,6 +273,9 @@
     padding: 0.2em 0.55em;
     border-radius: 0.25rem;
     transition: color 0.15s, border-color 0.15s;
+    /* sits above the stretched link overlay */
+    position: relative;
+    z-index: 1;
   }
 
   .news-item__pdf:hover {

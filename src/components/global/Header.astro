@@ -6,18 +6,32 @@ import { siteConfig } from '../../data/siteConfig';
 
 <header class="site-header">
   <div class="container header-inner">
+
+    <!-- Logo -->
     <a href="/" class="logo" aria-label={`${siteConfig.siteName} — Home`}>
-      <span class="logo-wordmark">{siteConfig.siteName}</span>
-      <span class="logo-ticker">TSX-V: FTZ | OTC: FTZFF</span>
+      <img
+        src="/assets/fitzroy-minerals-logo-white.png"
+        alt={siteConfig.siteName}
+        class="logo-img"
+        width="160"
+        height="40"
+      />
     </a>
 
+    <!-- Ticker — centered between logo and nav -->
+    <a href="/investors/stock" class="header-ticker">TSX-V: FTZ  $0.39
+ &nbsp;|&nbsp; OTC: FTZFF $0.29</a>
+
+    <!-- Desktop nav -->
     <div class="desktop-nav">
       <MainNav />
     </div>
 
+    <!-- Mobile -->
     <div class="mobile-controls">
       <MobileMenu pathname={Astro.url.pathname} client:load />
     </div>
+
   </div>
 </header>
 
@@ -35,40 +49,52 @@ import { siteConfig } from '../../data/siteConfig';
   .header-inner {
     display: flex;
     align-items: center;
-    justify-content: space-between;
     height: 100%;
     gap: var(--space-6);
   }
 
+  /* Logo */
   .logo {
     text-decoration: none;
     display: flex;
-    flex-direction: column;
-    gap: 1px;
+    align-items: center;
     flex-shrink: 0;
   }
 
-  .logo-wordmark {
-    font-size: 1.125rem;
-    font-weight: 700;
-    color: #ffffff;
-    letter-spacing: -0.01em;
-    line-height: 1.2;
+  .logo-img {
+    height: 42px;
+    width: auto;
+    display: block;
+    object-fit: contain;
   }
 
-  .logo-ticker {
-    font-size: 0.6875rem;
+  /* Ticker — pushes itself to centre with auto margins */
+  .header-ticker {
+    flex: 1;
+    text-align: center;
+    font-size: 0.8125rem;
+    font-weight: 600;
     color: var(--color-accent-light);
-    font-weight: 500;
-    letter-spacing: 0.04em;
+    letter-spacing: 0.06em;
     text-transform: uppercase;
+    white-space: nowrap;
+    text-decoration: none;
+    transition: opacity 0.15s;
   }
 
-  .desktop-nav { display: flex; }
+  .header-ticker:hover { opacity: 0.8; }
+
+  /* Nav sits at the right */
+  .desktop-nav {
+    display: flex;
+    flex-shrink: 0;
+  }
+
   .mobile-controls { display: none; }
 
   @media (max-width: 768px) {
     .desktop-nav { display: none; }
     .mobile-controls { display: flex; align-items: center; }
+    .header-ticker { display: none; }
   }
 </style>

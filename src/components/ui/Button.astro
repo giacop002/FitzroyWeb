@@ -2,7 +2,7 @@
 interface Props {
   label: string;
   href?: string;
-  variant?: 'primary' | 'secondary' | 'outline';
+  variant?: 'primary' | 'secondary' | 'outline' | 'outline-light';
   external?: boolean;
   size?: 'sm' | 'md' | 'lg';
   class?: string;
@@ -81,6 +81,18 @@ const externalProps = external
   .btn--outline:hover {
     border-color: var(--color-primary);
     background: var(--color-bg-alt);
+  }
+
+  /* Use on dark/colored backgrounds — white text & border */
+  .btn--outline-light {
+    background: transparent;
+    color: #ffffff;
+    border-color: rgba(255, 255, 255, 0.55);
+  }
+  .btn--outline-light:hover {
+    background: rgba(255, 255, 255, 0.12);
+    border-color: rgba(255, 255, 255, 0.9);
+    color: #ffffff;
   }
 
   .ext-icon { font-size: 0.75em; opacity: 0.8; }
