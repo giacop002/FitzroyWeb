@@ -1,0 +1,117 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import ExternalLink from '../ui/ExternalLink.astro';
+
+interface Props {
+  documents: CollectionEntry<'documents'>[];
+}
+
+const { documents } = Astro.props;
+
+if (documents.length === 0) return;
+
+const categoryLabels: Record<string, string> = {
+  'technical-report':      'Technical Report',
+  'corporate-presentation':'Corporate Presentation',
+  'financial-statement':   'Financial Statement',
+  'mda':                   'MD&A',
+  'agm-material':          'AGM Material',
+  'shareholder-letter':    'Shareholder Letter',
+  'capital-report':        'Capital Report',
+  'life-offering':         'LIFE Offering',
+};
+---
+
+<div class="project-downloads">
+  <h2 class="project-downloads__heading">Downloads</h2>
+  <ul class="project-downloads__list" role="list">
+    {documents.map((doc) => (
+      <li class="project-downloads__item">
+        <div class="project-downloads__icon" aria-hidden="true">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+            <polyline points="14 2 14 8 20 8"/>
+            <line x1="16" y1="13" x2="8" y2="13"/>
+            <line x1="16" y1="17" x2="8" y2="17"/>
+            <polyline points="10 9 9 9 8 9"/>
+          </svg>
+        </div>
+        <div class="project-downloads__info">
+          <span class="project-downloads__type">
+            {categoryLabels[doc.data.category] ?? doc.data.category}
+          </span>
+          <ExternalLink
+            href={doc.data.fileUrl}
+            label={doc.data.title}
+            class="project-downloads__link"
+          />
+          <span class="project-downloads__date">
+            {new Date(doc.data.date + 'T12:00:00').toLocaleDateString('en-CA', {
+              year: 'numeric', month: 'long'
+            })}
+          </span>
+        </div>
+      </li>
+    ))}
+  </ul>
+</div>
+
+<style>
+  .project-downloads__heading {
+    font-size: 1.25rem;
+    margin-bottom: var(--space-4);
+    color: var(--color-primary);
+  }
+
+  .project-downloads__list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+  }
+
+  .project-downloads__item {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--space-4);
+    padding: var(--space-4);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius);
+    background: var(--color-bg);
+    transition: box-shadow 0.15s;
+  }
+
+  .project-downloads__item:hover { box-shadow: var(--shadow-sm); }
+
+  .project-downloads__icon {
+    color: var(--color-accent);
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+
+  .project-downloads__info {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+    min-width: 0;
+  }
+
+  .project-downloads__type {
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--color-text-muted);
+  }
+
+  .project-downloads__link {
+    font-size: 0.9375rem;
+    font-weight: 500;
+    color: var(--color-primary);
+  }
+
+  .project-downloads__date {
+    font-size: 0.8125rem;
+    color: var(--color-text-muted);
+  }
+</style>

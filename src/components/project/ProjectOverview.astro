@@ -1,0 +1,86 @@
+---
+interface Props {
+  areaSqKm?: number;
+  ownership?: string;
+  commodities: string[];
+  coordinates?: { lat: number; lng: number };
+  country: 'chile' | 'argentina';
+  region: string;
+}
+
+const { areaSqKm, ownership, commodities, coordinates, country, region } = Astro.props;
+
+const commodityLabels: Record<string, string> = {
+  copper: 'Copper',
+  gold: 'Gold',
+  silver: 'Silver',
+  molybdenum: 'Molybdenum',
+};
+
+const rows = [
+  ownership   && { label: 'Ownership',    value: ownership },
+  areaSqKm    && { label: 'Area',         value: `${areaSqKm.toLocaleString()} km²` },
+  commodities.length && { label: 'Commodities',  value: commodities.map((c) => commodityLabels[c] ?? c).join(', ') },
+  { label: 'Country',     value: country === 'chile' ? 'Chile' : 'Argentina' },
+  { label: 'Region',      value: region },
+  coordinates && {
+    label: 'Coordinates',
+    value: `${Math.abs(coordinates.lat).toFixed(2)}°${coordinates.lat < 0 ? 'S' : 'N'}, ${Math.abs(coordinates.lng).toFixed(2)}°${coordinates.lng < 0 ? 'W' : 'E'}`,
+  },
+].filter(Boolean) as { label: string; value: string }[];
+---
+
+<div class="project-overview">
+  <h2 class="project-overview__heading">Project Overview</h2>
+  <dl class="project-overview__table">
+    {rows.map(({ label, value }) => (
+      <div class="project-overview__row">
+        <dt>{label}</dt>
+        <dd>{value}</dd>
+      </div>
+    ))}
+  </dl>
+</div>
+
+<style>
+  .project-overview__heading {
+    font-size: 1.25rem;
+    margin-bottom: var(--space-4);
+    color: var(--color-primary);
+  }
+
+  .project-overview__table {
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius);
+    overflow: hidden;
+  }
+
+  .project-overview__row {
+    display: grid;
+    grid-template-columns: 160px 1fr;
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .project-overview__row:last-child { border-bottom: none; }
+
+  dt {
+    padding: var(--space-3) var(--space-4);
+    font-size: 0.8125rem;
+    font-weight: 600;
+    color: var(--color-text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    background: var(--color-bg-alt);
+    display: flex;
+    align-items: center;
+  }
+
+  dd {
+    padding: var(--space-3) var(--space-4);
+    font-size: 0.9375rem;
+    color: var(--color-text);
+    display: flex;
+    align-items: center;
+    background: var(--color-bg);
+  }
+</style>

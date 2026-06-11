@@ -1,0 +1,123 @@
+---
+import Badge from '../ui/Badge.astro';
+import Button from '../ui/Button.astro';
+
+interface Props {
+  title: string;
+  country: 'chile' | 'argentina';
+  region: string;
+  stage: string;
+  highlights: string[];
+  coverImage?: string;
+  technicalReportUrl?: string;
+}
+
+const { title, country, region, stage, highlights, technicalReportUrl } = Astro.props;
+
+const stageLabel = stage.replace(/-/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase());
+const countryLabel = country === 'chile' ? '🇨🇱 Chile' : '🇦🇷 Argentina';
+---
+
+<section class="project-hero">
+  <div class="project-hero__bg" aria-hidden="true"></div>
+  <div class="container project-hero__inner">
+    <div class="project-hero__content">
+      <div class="project-hero__meta">
+        <span class="project-hero__country">{countryLabel}</span>
+        <span class="project-hero__sep" aria-hidden="true">·</span>
+        <span class="project-hero__region">{region}</span>
+      </div>
+      <h1 class="project-hero__title">{title}</h1>
+      <div class="project-hero__badge">
+        <Badge label={stageLabel} variant={stage as any} />
+      </div>
+      <ul class="project-hero__highlights" role="list">
+        {highlights.map((h) => <li>{h}</li>)}
+      </ul>
+      {technicalReportUrl && (
+        <div class="project-hero__action">
+          <Button
+            label="Download Technical Report"
+            href={technicalReportUrl}
+            variant="outline"
+            external
+          />
+        </div>
+      )}
+    </div>
+  </div>
+</section>
+
+<style>
+  .project-hero {
+    position: relative;
+    background: var(--color-primary);
+    color: var(--color-text-inverse);
+    padding-block: var(--space-20) var(--space-16);
+    overflow: hidden;
+  }
+
+  .project-hero__bg {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, #0a1a2e 0%, #1a3a5c 50%, #0f2744 100%);
+    opacity: 0.9;
+  }
+
+  .project-hero__inner {
+    position: relative;
+    z-index: 1;
+    max-width: 760px;
+  }
+
+  .project-hero__meta {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    font-size: 0.875rem;
+    color: rgba(255,255,255,0.6);
+    margin-bottom: var(--space-4);
+    letter-spacing: 0.01em;
+  }
+
+  .project-hero__sep { opacity: 0.4; }
+
+  .project-hero__title {
+    font-size: clamp(2rem, 5vw, 3rem);
+    font-weight: 800;
+    color: #ffffff;
+    letter-spacing: -0.02em;
+    line-height: 1.1;
+    margin-bottom: var(--space-4);
+  }
+
+  .project-hero__badge { margin-bottom: var(--space-6); }
+
+  .project-hero__highlights {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+    margin-bottom: var(--space-8);
+  }
+
+  .project-hero__highlights li {
+    display: flex;
+    align-items: baseline;
+    gap: var(--space-3);
+    font-size: 1rem;
+    color: rgba(255,255,255,0.85);
+    line-height: 1.5;
+  }
+
+  .project-hero__highlights li::before {
+    content: '';
+    display: inline-block;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--color-accent);
+    flex-shrink: 0;
+    margin-top: 0.45em;
+  }
+</style>

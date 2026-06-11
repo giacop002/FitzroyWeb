@@ -1,0 +1,202 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import BaseLayout from './BaseLayout.astro';
+import Breadcrumbs from '../components/ui/Breadcrumbs.astro';
+import ProjectHero from '../components/project/ProjectHero.astro';
+import ProjectOverview from '../components/project/ProjectOverview.astro';
+import ProjectDownloads from '../components/project/ProjectDownloads.astro';
+import RelatedNews from '../components/news/RelatedNews.astro';
+
+interface Props {
+  project: CollectionEntry<'projects'>;
+  relatedDocuments: CollectionEntry<'documents'>[];
+  relatedNews: CollectionEntry<'news'>[];
+}
+
+const { project, relatedDocuments, relatedNews } = Astro.props;
+const { title, country, region, stage, highlights, coverImage, technicalReportUrl,
+        areaSqKm, ownership, commodities, coordinates } = project.data;
+
+const description = `${title} — ${stage.replace(/-/g, ' ')} project in ${region}, ${country === 'chile' ? 'Chile' : 'Argentina'}. ${highlights[0] ?? ''}`;
+---
+
+<BaseLayout title={title} description={description}>
+  <div class="breadcrumb-bar">
+    <div class="container">
+      <Breadcrumbs items={[
+        { label: 'Projects', href: '/projects' },
+        { label: title },
+      ]} />
+    </div>
+  </div>
+
+  <ProjectHero
+    {title}
+    {country}
+    {region}
+    {stage}
+    {highlights}
+    {coverImage}
+    {technicalReportUrl}
+  />
+
+  <div class="project-body">
+    <div class="container">
+      <div class="project-layout">
+
+        <aside class="project-sidebar">
+          <ProjectOverview
+            {areaSqKm}
+            {ownership}
+            {commodities}
+            {coordinates}
+            {country}
+            {region}
+          />
+          {relatedDocuments.length > 0 && (
+            <div class="sidebar-section">
+              <ProjectDownloads documents={relatedDocuments} />
+            </div>
+          )}
+        </aside>
+
+        <article class="project-content prose">
+          <slot />
+        </article>
+
+      </div>
+
+      {relatedNews.length > 0 && (
+        <div class="project-related-news">
+          <RelatedNews articles={relatedNews} />
+        </div>
+      )}
+    </div>
+  </div>
+</BaseLayout>
+
+<style>
+  .breadcrumb-bar {
+    border-bottom: 1px solid var(--color-border);
+    background: var(--color-bg-alt);
+    padding-block: var(--space-3);
+  }
+
+  .project-body { padding-block: var(--space-12); }
+
+  .project-layout {
+    display: grid;
+    grid-template-columns: 300px 1fr;
+    gap: var(--space-10);
+    align-items: start;
+  }
+
+  .project-sidebar {
+    position: sticky;
+    top: calc(var(--header-height) + var(--space-6));
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-6);
+  }
+
+  .sidebar-section { margin-top: var(--space-2); }
+
+  /* Prose styles for MDX body */
+  .prose {
+    min-width: 0;
+    color: var(--color-text);
+    line-height: 1.75;
+  }
+
+  .prose :global(h2) {
+    font-size: 1.5rem;
+    color: var(--color-primary);
+    margin-top: var(--space-10);
+    margin-bottom: var(--space-4);
+    padding-bottom: var(--space-2);
+    border-bottom: 2px solid var(--color-border);
+  }
+
+  .prose :global(h3) {
+    font-size: 1.125rem;
+    color: var(--color-primary);
+    margin-top: var(--space-6);
+    margin-bottom: var(--space-3);
+  }
+
+  .prose :global(p) {
+    margin-bottom: var(--space-4);
+    font-size: 1rem;
+  }
+
+  .prose :global(ul),
+  .prose :global(ol) {
+    padding-left: var(--space-6);
+    margin-bottom: var(--space-4);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+  }
+
+  .prose :global(li) { font-size: 1rem; }
+
+  .prose :global(table) {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.875rem;
+    margin-block: var(--space-6);
+    border-radius: var(--radius);
+    overflow: hidden;
+    border: 1px solid var(--color-border);
+  }
+
+  .prose :global(th) {
+    background: var(--color-primary);
+    color: #ffffff;
+    padding: var(--space-3) var(--space-4);
+    text-align: left;
+    font-weight: 600;
+    font-size: 0.8125rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+
+  .prose :global(td) {
+    padding: var(--space-3) var(--space-4);
+    border-bottom: 1px solid var(--color-border);
+    color: var(--color-text);
+  }
+
+  .prose :global(tr:last-child td) { border-bottom: none; }
+  .prose :global(tr:nth-child(even) td) { background: var(--color-bg-alt); }
+
+  .prose :global(em) { font-style: italic; color: var(--color-text-muted); }
+  .prose :global(strong) { font-weight: 700; color: var(--color-primary); }
+
+  .prose :global(a) {
+    color: var(--color-accent);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+
+  .prose :global(blockquote) {
+    border-left: 3px solid var(--color-accent);
+    padding-left: var(--space-4);
+    margin-inline: 0;
+    color: var(--color-text-muted);
+    font-style: italic;
+  }
+
+  .project-related-news {
+    margin-top: var(--space-12);
+    padding-top: var(--space-10);
+    border-top: 1px solid var(--color-border);
+  }
+
+  @media (max-width: 900px) {
+    .project-layout {
+      grid-template-columns: 1fr;
+    }
+    .project-sidebar { position: static; }
+  }
+</style>

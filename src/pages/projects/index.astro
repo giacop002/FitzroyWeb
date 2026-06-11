@@ -1,0 +1,66 @@
+---
+import { getCollection } from 'astro:content';
+import PageLayout from '../../layouts/PageLayout.astro';
+import ProjectCard from '../../components/project/ProjectCard.astro';
+
+const projects = await getCollection('projects', ({ data }) => data.status === 'active');
+const sorted = projects.sort((a, b) => a.data.order - b.data.order);
+
+const byCountry = {
+  chile:     sorted.filter((p) => p.data.country === 'chile'),
+  argentina: sorted.filter((p) => p.data.country === 'argentina'),
+};
+---
+
+<PageLayout
+  title="Projects"
+  description="Fitzroy Minerals' portfolio of copper and gold exploration projects in Chile and Argentina."
+  breadcrumbs={[{ label: 'Projects' }]}
+  pageHeading="Our Projects"
+  pageIntro="Shallow copper-gold porphyry targets with infrastructure advantages across Chile and Argentina."
+>
+  {byCountry.chile.length > 0 && (
+    <section class="country-section">
+      <h2 class="country-heading">
+        <span class="country-flag">🇨🇱</span> Chile
+      </h2>
+      <div class="projects-grid">
+        {byCountry.chile.map((p) => <ProjectCard project={p} variant="featured" />)}
+      </div>
+    </section>
+  )}
+
+  {byCountry.argentina.length > 0 && (
+    <section class="country-section">
+      <h2 class="country-heading">
+        <span class="country-flag">🇦🇷</span> Argentina
+      </h2>
+      <div class="projects-grid">
+        {byCountry.argentina.map((p) => <ProjectCard project={p} variant="featured" />)}
+      </div>
+    </section>
+  )}
+</PageLayout>
+
+<style>
+  .country-section { margin-bottom: var(--space-12); }
+
+  .country-heading {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    font-size: 1.375rem;
+    color: var(--color-primary);
+    margin-bottom: var(--space-6);
+    padding-bottom: var(--space-3);
+    border-bottom: 2px solid var(--color-border);
+  }
+
+  .country-flag { font-size: 1.5rem; line-height: 1; }
+
+  .projects-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: var(--space-6);
+  }
+</style>

@@ -1,0 +1,162 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import Badge from '../ui/Badge.astro';
+
+interface Props {
+  project: CollectionEntry<'projects'>;
+  variant?: 'grid' | 'featured';
+}
+
+const { project, variant = 'grid' } = Astro.props;
+const { title, stage, country, region, highlights, commodities } = project.data;
+
+const stageLabel = stage.replace(/-/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase());
+const countryLabel = country === 'chile' ? '🇨🇱 Chile' : '🇦🇷 Argentina';
+const commodityIcons: Record<string, string> = {
+  copper: 'Cu', gold: 'Au', silver: 'Ag', molybdenum: 'Mo',
+};
+---
+
+<a href={`/projects/${project.slug}`} class:list={['project-card', `project-card--${variant}`]}>
+  <div class="project-card__img">
+    <div class="project-card__img-bg" aria-hidden="true"></div>
+    <div class="project-card__commodities">
+      {commodities.map((c) => (
+        <span class="project-card__commodity">{commodityIcons[c] ?? c}</span>
+      ))}
+    </div>
+  </div>
+  <div class="project-card__body">
+    <div class="project-card__top">
+      <Badge label={stageLabel} variant={stage} />
+      <span class="project-card__country">{countryLabel}</span>
+    </div>
+    <h3 class="project-card__title">{title}</h3>
+    <p class="project-card__region">{region}</p>
+    {variant === 'featured' && (
+      <ul class="project-card__highlights" role="list">
+        {highlights.slice(0, 3).map((h) => <li>{h}</li>)}
+      </ul>
+    )}
+    <span class="project-card__cta">View project →</span>
+  </div>
+</a>
+
+<style>
+  .project-card {
+    display: flex;
+    flex-direction: column;
+    text-decoration: none;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    background: var(--color-bg);
+    transition: box-shadow 0.2s, transform 0.2s;
+  }
+
+  .project-card:hover {
+    box-shadow: var(--shadow-lg);
+    transform: translateY(-3px);
+  }
+
+  .project-card__img {
+    position: relative;
+    aspect-ratio: 16/9;
+    overflow: hidden;
+  }
+
+  .project-card__img-bg {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, var(--color-primary) 0%, #1e3a5f 60%, #2a4f7a 100%);
+  }
+
+  .project-card__commodities {
+    position: absolute;
+    bottom: var(--space-3);
+    right: var(--space-3);
+    display: flex;
+    gap: var(--space-1);
+  }
+
+  .project-card__commodity {
+    background: rgba(193,127,58,0.85);
+    color: #fff;
+    font-size: 0.6875rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    padding: 0.15em 0.5em;
+    border-radius: var(--radius-sm);
+    backdrop-filter: blur(4px);
+  }
+
+  .project-card__body {
+    padding: var(--space-5);
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+  }
+
+  .project-card__top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-2);
+  }
+
+  .project-card__country {
+    font-size: 0.8125rem;
+    color: var(--color-text-muted);
+  }
+
+  .project-card__title {
+    font-size: 1.125rem;
+    color: var(--color-primary);
+    line-height: 1.3;
+    margin-top: var(--space-1);
+  }
+
+  .project-card__region {
+    font-size: 0.8125rem;
+    color: var(--color-text-muted);
+  }
+
+  .project-card__highlights {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+    margin-top: var(--space-2);
+    flex: 1;
+  }
+
+  .project-card__highlights li {
+    font-size: 0.8125rem;
+    color: var(--color-text-muted);
+    padding-left: var(--space-4);
+    position: relative;
+    line-height: 1.5;
+  }
+
+  .project-card__highlights li::before {
+    content: '—';
+    position: absolute;
+    left: 0;
+    color: var(--color-accent);
+  }
+
+  .project-card__cta {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--color-accent);
+    margin-top: var(--space-3);
+    transition: color 0.15s;
+  }
+
+  .project-card:hover .project-card__cta { color: var(--color-accent-light); }
+
+  /* Featured variant: slightly larger */
+  .project-card--featured .project-card__img { aspect-ratio: 3/2; }
+  .project-card--featured .project-card__title { font-size: 1.25rem; }
+</style>

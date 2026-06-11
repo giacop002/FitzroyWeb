@@ -1,0 +1,107 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import Badge from '../ui/Badge.astro';
+
+interface Props {
+  articles: CollectionEntry<'news'>[];
+  heading?: string;
+}
+
+const { articles, heading = 'Related News' } = Astro.props;
+
+if (articles.length === 0) return;
+
+const categoryLabels: Record<string, string> = {
+  'exploration-results':  'Exploration Results',
+  'corporate-update':     'Corporate Update',
+  'financial-disclosure': 'Financial Disclosure',
+  'agm':                  'AGM',
+  'management-change':    'Management Change',
+  'property-update':      'Property Update',
+  'capital-markets':      'Capital Markets',
+};
+---
+
+<div class="related-news">
+  <h2 class="related-news__heading">{heading}</h2>
+  <ul class="related-news__list" role="list">
+    {articles.map((article) => (
+      <li>
+        <a href={`/news/${article.slug}`} class="related-news__item">
+          <div class="related-news__date">
+            {new Date(article.data.date + 'T12:00:00').toLocaleDateString('en-CA', {
+              year: 'numeric', month: 'short', day: 'numeric'
+            })}
+          </div>
+          <div class="related-news__body">
+            <Badge
+              label={categoryLabels[article.data.category] ?? article.data.category}
+              variant={article.data.category}
+            />
+            <p class="related-news__title">{article.data.title}</p>
+          </div>
+          <span class="related-news__arrow" aria-hidden="true">→</span>
+        </a>
+      </li>
+    ))}
+  </ul>
+</div>
+
+<style>
+  .related-news__heading {
+    font-size: 1.25rem;
+    margin-bottom: var(--space-4);
+    color: var(--color-primary);
+  }
+
+  .related-news__list { list-style: none; display: flex; flex-direction: column; }
+
+  .related-news__item {
+    display: grid;
+    grid-template-columns: 110px 1fr auto;
+    gap: var(--space-4);
+    align-items: center;
+    padding: var(--space-4) var(--space-2);
+    text-decoration: none;
+    border-bottom: 1px solid var(--color-border);
+    transition: background 0.15s;
+    border-radius: var(--radius-sm);
+  }
+
+  .related-news__item:last-child { border-bottom: none; }
+  .related-news__item:hover { background: var(--color-bg-alt); }
+
+  .related-news__date {
+    font-size: 0.8125rem;
+    color: var(--color-text-muted);
+  }
+
+  .related-news__body {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+  }
+
+  .related-news__title {
+    font-size: 0.9375rem;
+    font-weight: 500;
+    color: var(--color-primary);
+    line-height: 1.4;
+  }
+
+  .related-news__arrow {
+    color: var(--color-accent);
+    opacity: 0;
+    transition: opacity 0.15s;
+  }
+
+  .related-news__item:hover .related-news__arrow { opacity: 1; }
+
+  @media (max-width: 600px) {
+    .related-news__item {
+      grid-template-columns: 1fr;
+      gap: var(--space-2);
+    }
+    .related-news__arrow { display: none; }
+  }
+</style>
