@@ -1,0 +1,58 @@
+---
+import { getCollection } from 'astro:content';
+import InvestorsLayout from '../../layouts/InvestorsLayout.astro';
+import DocumentCard from '../../components/investors/DocumentCard.astro';
+
+const docs = await getCollection('documents', ({ data }) =>
+  data.category === 'technical-report'
+);
+const sorted = docs.sort((a, b) => b.data.date.localeCompare(a.data.date));
+---
+
+<InvestorsLayout
+  title="Technical Reports"
+  description="National Instrument 43-101 technical reports for Fitzroy Minerals' projects."
+  pageHeading="Technical Reports"
+  pageIntro="National Instrument 43-101 compliant technical reports for Fitzroy Minerals' mineral properties, filed on SEDAR+."
+>
+  {sorted.length > 0 ? (
+    <div class="reports-list">
+      {sorted.map((doc) => <DocumentCard document={doc} />)}
+    </div>
+  ) : (
+    <p class="empty">No technical reports available at this time.</p>
+  )}
+
+  <div class="reports-note">
+    <p>
+      Technical reports are prepared in accordance with National Instrument 43-101 — Standards of
+      Disclosure for Mineral Projects. All reports are filed on{' '}
+      <a href="https://www.sedarplus.ca/" target="_blank" rel="noopener noreferrer">SEDAR+</a>.
+    </p>
+  </div>
+</InvestorsLayout>
+
+<style>
+  .reports-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+    max-width: 720px;
+  }
+
+  .empty { color: var(--color-text-muted); font-size: 0.9375rem; }
+
+  .reports-note {
+    margin-top: var(--space-8);
+    max-width: 720px;
+    padding: var(--space-4) var(--space-5);
+    background: var(--color-bg-alt);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius);
+    font-size: 0.875rem;
+    color: var(--color-text-muted);
+    line-height: 1.6;
+  }
+
+  .reports-note a { color: var(--color-accent); text-decoration: underline; }
+</style>

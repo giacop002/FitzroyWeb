@@ -1,0 +1,137 @@
+---
+import { getCollection } from 'astro:content';
+import InvestorsLayout from '../../layouts/InvestorsLayout.astro';
+import ExternalLink from '../../components/ui/ExternalLink.astro';
+
+const items = await getCollection('media');
+const sorted = items.sort((a, b) => b.data.date.localeCompare(a.data.date));
+
+const typeLabels: Record<string, string> = {
+  'video':             'Video',
+  'shareholder-letter':'Letter to Shareholders',
+  'external-article':  'External Article',
+  'capital-report':    'Capital Report',
+};
+
+const typeOrder = ['video', 'shareholder-letter', 'capital-report', 'external-article'];
+
+const byType = typeOrder.reduce<Record<string, typeof sorted>>((acc, type) => {
+  const group = sorted.filter((item) => item.data.type === type);
+  if (group.length > 0) acc[type] = group;
+  return acc;
+}, {});
+---
+
+<InvestorsLayout
+  title="Media & Research"
+  description="Fitzroy Minerals media, videos, shareholder letters, and research coverage."
+  pageHeading="Media &amp; Research"
+  pageIntro="Videos, letters to shareholders, capital reports, and external research coverage."
+>
+  {Object.entries(byType).map(([type, mediaItems]) => (
+    <section class="media-section">
+      <h2 class="media-section__heading">{typeLabels[type] ?? type}</h2>
+      <ul class="media-list" role="list">
+        {mediaItems.map((item) => (
+          <li class="media-item">
+            <div class="media-item__meta">
+              <span class="media-item__date">
+                {new Date(item.data.date + 'T12:00:00').toLocaleDateString('en-CA', {
+                  year: 'numeric', month: 'short', day: 'numeric'
+                })}
+              </span>
+              {item.data.source && (
+                <span class="media-item__source">{item.data.source}</span>
+              )}
+            </div>
+            <div class="media-item__body">
+              <ExternalLink href={item.data.url} label={item.data.title} class="media-item__title" />
+              {item.data.description && (
+                <p class="media-item__desc">{item.data.description}</p>
+              )}
+            </div>
+          </li>
+        ))}
+      </ul>
+    </section>
+  ))}
+
+  {sorted.length === 0 && (
+    <p class="empty">No media items available at this time.</p>
+  )}
+</InvestorsLayout>
+
+<style>
+  .media-section { margin-bottom: var(--space-10); }
+
+  .media-section__heading {
+    font-size: 1.25rem;
+    color: var(--color-primary);
+    margin-bottom: var(--space-5);
+    padding-bottom: var(--space-3);
+    border-bottom: 2px solid var(--color-border);
+  }
+
+  .media-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius);
+    overflow: hidden;
+  }
+
+  .media-item {
+    display: grid;
+    grid-template-columns: 130px 1fr;
+    gap: var(--space-5);
+    padding: var(--space-4) var(--space-5);
+    border-bottom: 1px solid var(--color-border);
+    transition: background 0.15s;
+  }
+
+  .media-item:last-child { border-bottom: none; }
+  .media-item:hover { background: var(--color-bg-alt); }
+
+  .media-item__meta {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+    padding-top: 2px;
+  }
+
+  .media-item__date {
+    font-size: 0.8125rem;
+    color: var(--color-text-muted);
+  }
+
+  .media-item__source {
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--color-accent);
+  }
+
+  .media-item__body { display: flex; flex-direction: column; gap: var(--space-1); }
+
+  .media-item__title {
+    font-size: 0.9375rem;
+    font-weight: 600;
+    color: var(--color-primary);
+    line-height: 1.4;
+  }
+
+  .media-item__desc {
+    font-size: 0.875rem;
+    color: var(--color-text-muted);
+    line-height: 1.6;
+  }
+
+  .empty { color: var(--color-text-muted); font-size: 0.9375rem; }
+
+  @media (max-width: 600px) {
+    .media-item { grid-template-columns: 1fr; gap: var(--space-2); }
+  }
+</style>

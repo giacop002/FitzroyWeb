@@ -1,0 +1,91 @@
+---
+import { shareStructure } from '../../data/shareStructure';
+
+const fmt = (n: number) => n.toLocaleString('en-CA');
+
+const rows = [
+  { label: 'Issued & Outstanding', value: fmt(shareStructure.issuedAndOutstanding), note: '*' },
+  { label: 'Stock Options',        value: fmt(shareStructure.stockOptions) },
+  { label: 'Warrants',             value: fmt(shareStructure.warrants) },
+  { label: 'Fully Diluted',        value: fmt(shareStructure.fullyDiluted), total: true },
+];
+
+const asOf = new Date(shareStructure.asOf + 'T12:00:00').toLocaleDateString('en-CA', {
+  year: 'numeric', month: 'long', day: 'numeric'
+});
+---
+
+<div class="share-table">
+  <p class="share-table__date">As of {asOf}</p>
+  <table>
+    <thead>
+      <tr>
+        <th scope="col">Security</th>
+        <th scope="col" class="num">Shares</th>
+      </tr>
+    </thead>
+    <tbody>
+      {rows.map(({ label, value, note, total }) => (
+        <tr class:list={[{ 'share-table__total': total }]}>
+          <td>{label}{note && <sup>{note}</sup>}</td>
+          <td class="num">{value}</td>
+        </tr>
+      ))}
+    </tbody>
+  </table>
+  <p class="share-table__footnote">* Common shares</p>
+</div>
+
+<style>
+  .share-table__date {
+    font-size: 0.8125rem;
+    color: var(--color-text-muted);
+    margin-bottom: var(--space-3);
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius);
+    overflow: hidden;
+    font-size: 0.9375rem;
+  }
+
+  th {
+    background: var(--color-primary);
+    color: #ffffff;
+    padding: var(--space-3) var(--space-4);
+    text-align: left;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+
+  td {
+    padding: var(--space-3) var(--space-4);
+    border-bottom: 1px solid var(--color-border);
+    color: var(--color-text);
+  }
+
+  tr:last-child td { border-bottom: none; }
+  tr:nth-child(even) td { background: var(--color-bg-alt); }
+
+  .num { text-align: right; font-variant-numeric: tabular-nums; font-family: monospace; }
+
+  .share-table__total td {
+    font-weight: 700;
+    color: var(--color-primary);
+    background: #f0f4f8 !important;
+    border-top: 2px solid var(--color-primary);
+  }
+
+  .share-table__footnote {
+    font-size: 0.75rem;
+    color: var(--color-text-muted);
+    margin-top: var(--space-2);
+  }
+
+  sup { font-size: 0.65em; }
+</style>

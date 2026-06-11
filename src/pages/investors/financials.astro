@@ -1,0 +1,44 @@
+---
+import { getCollection } from 'astro:content';
+import InvestorsLayout from '../../layouts/InvestorsLayout.astro';
+import FinancialTable from '../../components/investors/FinancialTable.astro';
+
+const docs = await getCollection('documents', ({ data }) =>
+  data.category === 'financial-statement' || data.category === 'mda'
+);
+---
+
+<InvestorsLayout
+  title="Financials"
+  description="Fitzroy Minerals quarterly and annual financial statements and management discussion & analysis."
+  pageHeading="Financial Reports"
+  pageIntro="Quarterly and annual financial statements (FS) and Management Discussion & Analysis (MD&A) filed on SEDAR+."
+>
+  <FinancialTable documents={docs} />
+
+  <div class="financials-note">
+    <p>
+      All financial documents are filed on the System for Electronic Document Analysis and Retrieval.
+      View the complete filing history at{' '}
+      <a href="https://www.sedarplus.ca/" target="_blank" rel="noopener noreferrer">SEDAR+</a>.
+    </p>
+  </div>
+</InvestorsLayout>
+
+<style>
+  .financials-note {
+    margin-top: var(--space-8);
+    padding: var(--space-4) var(--space-5);
+    background: var(--color-bg-alt);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius);
+    font-size: 0.875rem;
+    color: var(--color-text-muted);
+    line-height: 1.6;
+  }
+
+  .financials-note a {
+    color: var(--color-accent);
+    text-decoration: underline;
+  }
+</style>

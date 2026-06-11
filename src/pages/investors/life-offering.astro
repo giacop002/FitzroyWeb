@@ -1,0 +1,46 @@
+---
+import InvestorsLayout from '../../layouts/InvestorsLayout.astro';
+import LifeOfferingGate from '../../components/investors/LifeOfferingGate.svelte';
+import { getCollection } from 'astro:content';
+
+const docs = await getCollection('documents', ({ data }) =>
+  data.category === 'life-offering' && data.restricted
+);
+const offeringDoc = docs.sort((a, b) => b.data.date.localeCompare(a.data.date))[0];
+const documentUrl = offeringDoc?.data.fileUrl ?? '#';
+---
+
+<InvestorsLayout
+  title="LIFE Offering"
+  description="Fitzroy Minerals LIFE Offering documents — eligible investors only."
+  pageHeading="LIFE Offering"
+  pageIntro="Listed Issuer Financing Exemption offering materials. Access is restricted to eligible investors."
+>
+  {offeringDoc ? (
+    <LifeOfferingGate {documentUrl} client:load />
+  ) : (
+    <div class="life-unavailable">
+      <p>No LIFE Offering document is currently available.</p>
+      <a href="/investors" class="back-link">← Return to Investor Relations</a>
+    </div>
+  )}
+</InvestorsLayout>
+
+<style>
+  .life-unavailable {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-5);
+    padding: var(--space-16);
+    text-align: center;
+    color: var(--color-text-muted);
+    font-size: 0.9375rem;
+  }
+
+  .back-link {
+    font-weight: 600;
+    color: var(--color-accent);
+    text-decoration: none;
+  }
+</style>

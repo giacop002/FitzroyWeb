@@ -1,0 +1,35 @@
+---
+import { getCollection } from 'astro:content';
+import InvestorsLayout from '../../layouts/InvestorsLayout.astro';
+import DocumentCard from '../../components/investors/DocumentCard.astro';
+
+const docs = await getCollection('documents', ({ data }) =>
+  data.category === 'corporate-presentation'
+);
+const sorted = docs.sort((a, b) => b.data.date.localeCompare(a.data.date));
+---
+
+<InvestorsLayout
+  title="Presentations"
+  description="Corporate presentations from Fitzroy Minerals — downloadable PDF slideshows."
+  pageHeading="Corporate Presentations"
+  pageIntro="Download the latest corporate presentation and previous investor decks."
+>
+  {sorted.length > 0 ? (
+    <div class="presentations-grid">
+      {sorted.map((doc) => <DocumentCard document={doc} />)}
+    </div>
+  ) : (
+    <p class="empty">No presentations available at this time.</p>
+  )}
+</InvestorsLayout>
+
+<style>
+  .presentations-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+    gap: var(--space-4);
+  }
+
+  .empty { color: var(--color-text-muted); font-size: 0.9375rem; }
+</style>

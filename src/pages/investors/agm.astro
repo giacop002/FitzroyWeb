@@ -1,0 +1,201 @@
+---
+import { getCollection } from 'astro:content';
+import InvestorsLayout from '../../layouts/InvestorsLayout.astro';
+import DocumentCard from '../../components/investors/DocumentCard.astro';
+import { contactInfo } from '../../data/contactInfo';
+
+const docs = await getCollection('documents', ({ data }) =>
+  data.category === 'agm-material'
+);
+const sorted = docs.sort((a, b) => b.data.date.localeCompare(a.data.date));
+---
+
+<InvestorsLayout
+  title="Annual General Meeting"
+  description="Fitzroy Minerals Annual General Meeting information and materials."
+  pageHeading="Annual General Meeting"
+  pageIntro="Information and materials for the Annual General and Special Meeting of Shareholders."
+>
+  <div class="agm-layout">
+    <div class="agm-main">
+      <section class="agm-section">
+        <h2 class="agm-section__heading">2025 Annual General Meeting</h2>
+        <div class="agm-info">
+          <div class="agm-info__item">
+            <span class="agm-info__label">Date</span>
+            <span class="agm-info__value">Friday, October 24, 2025</span>
+          </div>
+          <div class="agm-info__item">
+            <span class="agm-info__label">Time</span>
+            <span class="agm-info__value">3:00 p.m. (Vancouver time)</span>
+          </div>
+          <div class="agm-info__item">
+            <span class="agm-info__label">Location</span>
+            <span class="agm-info__value">
+              {contactInfo.headOffice.address}<br />
+              {contactInfo.headOffice.city}, {contactInfo.headOffice.province}
+            </span>
+          </div>
+        </div>
+        <p class="agm-body">
+          The annual general and special meeting of the shareholders of Fitzroy Minerals Inc.
+          will be held at the Head Office. Shareholders are encouraged to review the Information
+          Circular prior to voting.
+        </p>
+      </section>
+
+      {sorted.length > 0 && (
+        <section class="agm-section">
+          <h2 class="agm-section__heading">Meeting Materials</h2>
+          <div class="agm-docs">
+            {sorted.map((doc) => <DocumentCard document={doc} />)}
+          </div>
+        </section>
+      )}
+    </div>
+
+    <aside class="agm-sidebar">
+      <div class="agm-contact">
+        <h3 class="agm-contact__heading">Questions?</h3>
+        <p class="agm-contact__body">
+          For questions regarding the AGM or your shares, please contact our Transfer Agent or the Company directly.
+        </p>
+        <div class="agm-contact__details">
+          <p class="agm-contact__label">Transfer Agent</p>
+          <p>{contactInfo.transferAgent.company}</p>
+          <a href={`tel:${contactInfo.transferAgent.phone}`} class="agm-contact__link">
+            {contactInfo.transferAgent.phone}
+          </a>
+          <a href={`tel:${contactInfo.transferAgent.tollFree}`} class="agm-contact__link">
+            {contactInfo.transferAgent.tollFree} (Toll-Free)
+          </a>
+          <a href={contactInfo.transferAgent.web} target="_blank" rel="noopener noreferrer" class="agm-contact__link">
+            odysseytrust.com ↗
+          </a>
+        </div>
+      </div>
+    </aside>
+  </div>
+</InvestorsLayout>
+
+<style>
+  .agm-layout {
+    display: grid;
+    grid-template-columns: 1fr 280px;
+    gap: var(--space-10);
+    align-items: start;
+  }
+
+  .agm-section { margin-bottom: var(--space-10); }
+
+  .agm-section__heading {
+    font-size: 1.25rem;
+    color: var(--color-primary);
+    margin-bottom: var(--space-5);
+    padding-bottom: var(--space-3);
+    border-bottom: 2px solid var(--color-border);
+  }
+
+  .agm-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius);
+    overflow: hidden;
+    margin-bottom: var(--space-5);
+  }
+
+  .agm-info__item {
+    display: grid;
+    grid-template-columns: 100px 1fr;
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .agm-info__item:last-child { border-bottom: none; }
+
+  .agm-info__label {
+    padding: var(--space-3) var(--space-4);
+    font-size: 0.8125rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--color-text-muted);
+    background: var(--color-bg-alt);
+  }
+
+  .agm-info__value {
+    padding: var(--space-3) var(--space-4);
+    font-size: 0.9375rem;
+    color: var(--color-text);
+    line-height: 1.5;
+  }
+
+  .agm-body {
+    font-size: 0.9375rem;
+    color: var(--color-text-muted);
+    line-height: 1.7;
+  }
+
+  .agm-docs { display: flex; flex-direction: column; gap: var(--space-3); }
+
+  .agm-contact {
+    background: var(--color-bg-alt);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius);
+    padding: var(--space-5);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+    position: sticky;
+    top: calc(var(--header-height) + 56px + var(--space-6));
+  }
+
+  .agm-contact__heading {
+    font-size: 1rem;
+    color: var(--color-primary);
+  }
+
+  .agm-contact__body {
+    font-size: 0.875rem;
+    color: var(--color-text-muted);
+    line-height: 1.6;
+  }
+
+  .agm-contact__details {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+    padding-top: var(--space-3);
+    border-top: 1px solid var(--color-border);
+  }
+
+  .agm-contact__label {
+    font-size: 0.6875rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    color: var(--color-accent);
+    margin-bottom: var(--space-1);
+  }
+
+  .agm-contact__details p {
+    font-size: 0.875rem;
+    color: var(--color-text);
+    font-weight: 600;
+  }
+
+  .agm-contact__link {
+    font-size: 0.875rem;
+    color: var(--color-text-muted);
+    text-decoration: none;
+    transition: color 0.15s;
+  }
+
+  .agm-contact__link:hover { color: var(--color-accent); }
+
+  @media (max-width: 800px) {
+    .agm-layout { grid-template-columns: 1fr; }
+    .agm-contact { position: static; }
+  }
+</style>

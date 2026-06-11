@@ -1,0 +1,87 @@
+---
+import BaseLayout from './BaseLayout.astro';
+import SubNav from '../components/global/SubNav.astro';
+import Breadcrumbs from '../components/ui/Breadcrumbs.astro';
+
+interface Props {
+  title: string;
+  description?: string;
+  pageHeading?: string;
+  pageIntro?: string;
+}
+
+const { title, description, pageHeading, pageIntro } = Astro.props;
+
+const subnavItems = [
+  { label: 'Overview',          href: '/investors' },
+  { label: 'Stock Information', href: '/investors/stock' },
+  { label: 'Share Structure',   href: '/investors/share-structure' },
+  { label: 'Presentations',     href: '/investors/presentations' },
+  { label: 'Financials',        href: '/investors/financials' },
+  { label: 'Technical Reports', href: '/investors/technical-reports' },
+  { label: 'AGM',               href: '/investors/agm' },
+  { label: 'Media & Research',  href: '/investors/media' },
+  { label: 'LIFE Offering',     href: '/investors/life-offering' },
+];
+
+const breadcrumbs = Astro.url.pathname === '/investors'
+  ? [{ label: 'Investors' }]
+  : [
+      { label: 'Investors', href: '/investors' },
+      { label: title },
+    ];
+---
+
+<BaseLayout {title} {description}>
+  <div class="ir-breadcrumb-bar">
+    <div class="container">
+      <Breadcrumbs items={breadcrumbs} />
+    </div>
+  </div>
+
+  <SubNav items={subnavItems} />
+
+  {(pageHeading || pageIntro) && (
+    <div class="ir-page-header">
+      <div class="container">
+        {pageHeading && <h1 class="ir-page-heading">{pageHeading}</h1>}
+        {pageIntro && <p class="ir-page-intro">{pageIntro}</p>}
+      </div>
+    </div>
+  )}
+
+  <div class="ir-body">
+    <div class="container">
+      <slot />
+    </div>
+  </div>
+</BaseLayout>
+
+<style>
+  .ir-breadcrumb-bar {
+    background: var(--color-bg-alt);
+    border-bottom: 1px solid var(--color-border);
+    padding-block: var(--space-3);
+  }
+
+  .ir-page-header {
+    background: var(--color-primary);
+    color: var(--color-text-inverse);
+    padding-block: var(--space-10);
+  }
+
+  .ir-page-heading {
+    font-size: clamp(1.625rem, 4vw, 2.25rem);
+    color: #ffffff;
+    margin-bottom: var(--space-2);
+  }
+
+  .ir-page-intro {
+    font-size: 1.0625rem;
+    color: rgba(255,255,255,0.72);
+    max-width: 560px;
+    line-height: 1.65;
+  }
+
+  .ir-body { padding-block: var(--space-10); }
+</style>

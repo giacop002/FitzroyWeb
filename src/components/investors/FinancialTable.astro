@@ -1,0 +1,143 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import ExternalLink from '../ui/ExternalLink.astro';
+
+interface Props {
+  documents: CollectionEntry<'documents'>[];
+}
+
+const { documents } = Astro.props;
+
+// Group FS + MDA pairs by fiscal year + quarter
+const quarterOrder = { Q1: 1, Q2: 2, Q3: 3, Q4: 4, Annual: 5 };
+
+type Quarter = keyof typeof quarterOrder;
+
+interface Period {
+  year: number;
+  quarter: Quarter;
+  fs?: CollectionEntry<'documents'>;
+  mda?: CollectionEntry<'documents'>;
+}
+
+const periodsMap = new Map<string, Period>();
+
+for (const doc of documents) {
+  const year = doc.data.fiscalYear;
+  const quarter = doc.data.quarter as Quarter;
+  if (!year || !quarter) continue;
+  const key = `${year}-${quarter}`;
+  if (!periodsMap.has(key)) {
+    periodsMap.set(key, { year, quarter, fs: undefined, mda: undefined });
+  }
+  const period = periodsMap.get(key)!;
+  if (doc.data.category === 'financial-statement') period.fs = doc;
+  if (doc.data.category === 'mda') period.mda = doc;
+}
+
+const periods = [...periodsMap.values()].sort((a, b) => {
+  if (b.year !== a.year) return b.year - a.year;
+  return quarterOrder[b.quarter] - quarterOrder[a.quarter];
+});
+
+// Group by year for display
+const byYear = periods.reduce<Record<number, Period[]>>((acc, p) => {
+  acc[p.year] ??= [];
+  acc[p.year].push(p);
+  return acc;
+}, {});
+
+const years = Object.keys(byYear)
+  .map(Number)
+  .sort((a, b) => b - a);
+
+const quarterLabel: Record<Quarter, string> = {
+  Q1: 'Q1', Q2: 'Q2', Q3: 'Q3', Q4: 'Q4', Annual: 'Annual'
+};
+---
+
+<div class="financial-table">
+  {years.map((year) => (
+    <div class="financial-table__year-group">
+      <h3 class="financial-table__year">{year}</h3>
+      <table>
+        <thead>
+          <tr>
+            <th scope="col">Period</th>
+            <th scope="col">Financial Statements</th>
+            <th scope="col">MD&amp;A</th>
+          </tr>
+        </thead>
+        <tbody>
+          {byYear[year].map((period) => (
+            <tr>
+              <td class="period-label">
+                {period.quarter === 'Annual'
+                  ? `Annual ${year}`
+                  : `${quarterLabel[period.quarter]} ${year}`}
+              </td>
+              <td>
+                {period.fs
+                  ? <ExternalLink href={period.fs.data.fileUrl} label="Financial Statements (PDF)" />
+                  : <span class="unavailable">—</span>
+                }
+              </td>
+              <td>
+                {period.mda
+                  ? <ExternalLink href={period.mda.data.fileUrl} label="MD&A (PDF)" />
+                  : <span class="unavailable">—</span>
+                }
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  ))}
+</div>
+
+<style>
+  .financial-table__year-group { margin-bottom: var(--space-8); }
+
+  .financial-table__year {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--color-primary);
+    margin-bottom: var(--space-3);
+    padding-bottom: var(--space-2);
+    border-bottom: 2px solid var(--color-accent);
+    display: inline-block;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius);
+    overflow: hidden;
+    font-size: 0.9rem;
+  }
+
+  th {
+    background: var(--color-primary);
+    color: #fff;
+    padding: var(--space-3) var(--space-4);
+    text-align: left;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+
+  td {
+    padding: var(--space-3) var(--space-4);
+    border-bottom: 1px solid var(--color-border);
+    vertical-align: middle;
+  }
+
+  tr:last-child td { border-bottom: none; }
+  tr:nth-child(even) td { background: var(--color-bg-alt); }
+
+  .period-label { font-weight: 600; color: var(--color-primary); white-space: nowrap; }
+  .unavailable { color: var(--color-border-dark); }
+</style>

@@ -1,0 +1,73 @@
+---
+import InvestorsLayout from '../../layouts/InvestorsLayout.astro';
+import ShareStructureTable from '../../components/investors/ShareStructureTable.astro';
+import { shareStructure } from '../../data/shareStructure';
+---
+
+<InvestorsLayout
+  title="Share Structure"
+  description="Fitzroy Minerals share structure — issued shares, stock options, warrants, and fully diluted count."
+  pageHeading="Share Structure"
+  pageIntro="Current capital structure of Fitzroy Minerals Ltd., including issued shares, stock options, and warrants."
+>
+  <div class="share-content">
+    <div class="share-table-wrap">
+      <ShareStructureTable />
+    </div>
+
+    <div class="share-notes">
+      <h2 class="share-notes__heading">Notes</h2>
+      <ul class="share-notes__list">
+        <li>
+          Share structure information is updated following each quarterly financial filing.
+          The figures above reflect the capital structure as of the date indicated.
+        </li>
+        <li>
+          For complete details on stock options (exercise prices and expiry dates) and
+          warrants, please refer to the most recent financial statements filed on{' '}
+          <a href="https://www.sedarplus.ca/" target="_blank" rel="noopener noreferrer">SEDAR+</a>.
+        </li>
+        <li>
+          Fully diluted shares assumes the exercise of all outstanding stock options and warrants.
+        </li>
+      </ul>
+    </div>
+  </div>
+</InvestorsLayout>
+
+<style>
+  .share-content {
+    display: grid;
+    grid-template-columns: 480px 1fr;
+    gap: var(--space-10);
+    align-items: start;
+  }
+
+  .share-notes__heading {
+    font-size: 1.125rem;
+    color: var(--color-primary);
+    margin-bottom: var(--space-4);
+  }
+
+  .share-notes__list {
+    padding-left: var(--space-5);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+  }
+
+  .share-notes__list li {
+    font-size: 0.9rem;
+    color: var(--color-text-muted);
+    line-height: 1.65;
+  }
+
+  .share-notes__list a {
+    color: var(--color-accent);
+    text-decoration: underline;
+  }
+
+  @media (max-width: 800px) {
+    .share-content { grid-template-columns: 1fr; }
+  }
+</style>

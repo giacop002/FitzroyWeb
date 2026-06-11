@@ -1,0 +1,147 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import ExternalLink from '../ui/ExternalLink.astro';
+
+interface Props {
+  document: CollectionEntry<'documents'>;
+  variant?: 'card' | 'row';
+}
+
+const { document: doc, variant = 'card' } = Astro.props;
+
+const dateStr = new Date(doc.data.date + 'T12:00:00').toLocaleDateString('en-CA', {
+  year: 'numeric', month: 'long', day: 'numeric'
+});
+
+const categoryLabels: Record<string, string> = {
+  'corporate-presentation': 'Corporate Presentation',
+  'financial-statement':    'Financial Statement',
+  'mda':                    'MD&A',
+  'technical-report':       'Technical Report',
+  'agm-material':           'AGM Material',
+  'shareholder-letter':     'Shareholder Letter',
+  'capital-report':         'Capital Report',
+  'life-offering':          'LIFE Offering',
+};
+---
+
+{variant === 'card' ? (
+  <div class="doc-card">
+    <div class="doc-card__icon" aria-hidden="true">
+      <svg width="28" height="36" viewBox="0 0 28 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect width="28" height="36" rx="3" fill="var(--color-bg-alt)"/>
+        <path d="M18 1v8h8" stroke="var(--color-border-dark)" stroke-width="1.5" fill="none"/>
+        <path d="M18 1H4a3 3 0 0 0-3 3v28a3 3 0 0 0 3 3h20a3 3 0 0 0 3-3V9L18 1Z" stroke="var(--color-border-dark)" stroke-width="1.5" fill="none"/>
+        <line x1="7" y1="16" x2="21" y2="16" stroke="var(--color-accent)" stroke-width="1.5" stroke-linecap="round"/>
+        <line x1="7" y1="21" x2="21" y2="21" stroke="var(--color-border-dark)" stroke-width="1.5" stroke-linecap="round"/>
+        <line x1="7" y1="26" x2="15" y2="26" stroke="var(--color-border-dark)" stroke-width="1.5" stroke-linecap="round"/>
+      </svg>
+    </div>
+    <div class="doc-card__body">
+      <span class="doc-card__type">{categoryLabels[doc.data.category] ?? doc.data.category}</span>
+      <ExternalLink href={doc.data.fileUrl} label={doc.data.title} class="doc-card__title" />
+      <span class="doc-card__date">{dateStr}</span>
+    </div>
+    <ExternalLink
+      href={doc.data.fileUrl}
+      label="PDF"
+      class="doc-card__btn"
+    />
+  </div>
+) : (
+  <div class="doc-row">
+    <div class="doc-row__info">
+      <ExternalLink href={doc.data.fileUrl} label={doc.data.title} class="doc-row__title" />
+      <span class="doc-row__date">{dateStr}</span>
+    </div>
+    <ExternalLink href={doc.data.fileUrl} label="Download PDF ↗" class="doc-row__link" />
+  </div>
+)}
+
+<style>
+  /* Card variant */
+  .doc-card {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--space-4);
+    padding: var(--space-5);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius);
+    background: var(--color-bg);
+    transition: box-shadow 0.15s;
+  }
+
+  .doc-card:hover { box-shadow: var(--shadow-sm); }
+
+  .doc-card__icon { flex-shrink: 0; margin-top: 2px; }
+
+  .doc-card__body {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+    min-width: 0;
+  }
+
+  .doc-card__type {
+    font-size: 0.6875rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    color: var(--color-accent);
+  }
+
+  .doc-card__title {
+    font-size: 0.9375rem;
+    font-weight: 600;
+    color: var(--color-primary);
+    line-height: 1.4;
+  }
+
+  .doc-card__date { font-size: 0.8125rem; color: var(--color-text-muted); }
+
+  .doc-card__btn {
+    flex-shrink: 0;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    background: var(--color-accent);
+    color: #fff !important;
+    padding: var(--space-2) var(--space-3);
+    border-radius: var(--radius-sm);
+    transition: background 0.15s;
+  }
+
+  .doc-card__btn:hover { background: var(--color-accent-light) !important; }
+
+  /* Row variant */
+  .doc-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: var(--space-4);
+    padding: var(--space-3) var(--space-4);
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .doc-row:last-child { border-bottom: none; }
+
+  .doc-row__info { display: flex; flex-direction: column; gap: var(--space-1); }
+
+  .doc-row__title {
+    font-size: 0.9375rem;
+    font-weight: 500;
+    color: var(--color-primary);
+  }
+
+  .doc-row__date { font-size: 0.8125rem; color: var(--color-text-muted); }
+
+  .doc-row__link {
+    font-size: 0.8125rem;
+    font-weight: 600;
+    color: var(--color-accent);
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+</style>
