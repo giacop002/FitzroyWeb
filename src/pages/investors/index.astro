@@ -3,7 +3,7 @@ import { getCollection } from 'astro:content';
 import InvestorsLayout from '../../layouts/InvestorsLayout.astro';
 import ShareStructureTable from '../../components/investors/ShareStructureTable.astro';
 import DocumentCard from '../../components/investors/DocumentCard.astro';
-import StockWidget from '../../components/investors/StockWidget.svelte';
+import SymbolInfoWidgets from '../../components/investors/SymbolInfoWidgets.astro';
 import SectionHeader from '../../components/ui/SectionHeader.astro';
 import { stockTickers } from '../../data/stockTickers';
 import { contactInfo } from '../../data/contactInfo';
@@ -32,10 +32,6 @@ const quickLinks = [
   { label: 'LIFE Offering',      href: '/investors/life-offering',    icon: '📄' },
 ];
 
-const tickers = [
-  { symbol: stockTickers.tsxv.symbol, exchange: stockTickers.tsxv.exchange, label: 'TSX-V' },
-  { symbol: stockTickers.otc.symbol,  exchange: stockTickers.otc.exchange,  label: 'OTC' },
-];
 ---
 
 <InvestorsLayout
@@ -46,8 +42,8 @@ const tickers = [
 >
   <!-- Stock Widget -->
   <section class="ir-section">
-    <SectionHeader title="Stock Information" ctaLabel="Full quote" ctaHref="/investors/stock" />
-    <StockWidget {tickers} client:load />
+    <SectionHeader title="Stock Information" ctaLabel="Full chart" ctaHref="/investors/stock" />
+    <SymbolInfoWidgets />
   </section>
 
   <!-- Quick Links -->

@@ -7,6 +7,7 @@ import Button from '../components/ui/Button.astro';
 import { siteConfig } from '../data/siteConfig';
 import { contactInfo } from '../data/contactInfo';
 import { stockTickers } from '../data/stockTickers';
+import SingleTickerWidgets from '../components/investors/SingleTickerWidgets.astro';
 
 const organizationJsonLd = {
   '@context': 'https://schema.org',
@@ -54,7 +55,6 @@ const categoryLabels: Record<string, string> = {
   <section class="hero">
     <div class="container hero-inner">
       <div class="hero-content">
-        <p class="hero-eyebrow">TSX-V: FTZ &nbsp;|&nbsp; OTC: FTZFF</p>
         <h1 class="hero-headline">
           Copper &amp; Gold<br />Exploration in<br />Chile and Argentina
         </h1>
@@ -163,6 +163,9 @@ const categoryLabels: Record<string, string> = {
         <Button label="Investor Hub" href="/investors" size="lg" />
         <Button label="Share Structure" href="/investors/share-structure" variant="outline-light" size="lg" />
       </div>
+    </div>
+    <div class="investors-cta__tickers">
+      <SingleTickerWidgets />
     </div>
   </section>
 </BaseLayout>
@@ -375,6 +378,7 @@ const categoryLabels: Record<string, string> = {
     align-items: center;
     gap: var(--space-8);
     flex-wrap: wrap;
+    margin-bottom: var(--space-10);
   }
 
   .investors-cta__title {
@@ -391,6 +395,14 @@ const categoryLabels: Record<string, string> = {
   }
 
   .investors-cta__actions { display: flex; gap: var(--space-4); flex-wrap: wrap; }
+
+  .investors-cta__tickers {
+    border-top: 1px solid rgba(255, 255, 255, 0.12);
+    padding-top: var(--space-6);
+    max-width: 680px;
+    margin-inline: auto;
+    width: 100%;
+  }
 
   /* ── Responsive ────────────────────────────────────────────────────────── */
   @media (max-width: 768px) {

@@ -71,7 +71,7 @@ const management = sorted.filter((p) => p.data.roleCategory === 'management');
   <section class="about-section">
     <div class="section-header-row">
       <h2 class="section-heading">Management Team</h2>
-      <Button href="/about/leadership" variant="outline" size="sm">Full Team →</Button>
+      <Button href="/about/leadership" variant="primary" size="sm" label="View Full Team →" />
     </div>
     <div class="people-grid">
       {management.map((person) => (

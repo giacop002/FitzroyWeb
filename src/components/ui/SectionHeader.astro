@@ -54,14 +54,23 @@ const { title, subtitle, ctaLabel, ctaHref, align = 'left' } = Astro.props;
   .section-header--center .section-header__subtitle { margin-inline: auto; }
 
   .section-header__cta {
-    font-size: 0.9375rem;
-    font-weight: 600;
-    color: var(--color-accent);
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35em;
+    font-size: 0.8125rem;
+    font-weight: 700;
+    color: #ffffff;
+    background: var(--color-accent);
     text-decoration: none;
     white-space: nowrap;
-    transition: color 0.15s;
     flex-shrink: 0;
+    padding: 0.4em 0.9em;
+    border-radius: var(--radius-sm);
+    transition: background 0.15s, transform 0.15s;
   }
 
-  .section-header__cta:hover { color: var(--color-accent-light); }
+  .section-header__cta:hover {
+    background: var(--color-accent-light);
+    transform: translateY(-1px);
+  }
 </style>

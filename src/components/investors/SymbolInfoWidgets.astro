@@ -1,0 +1,76 @@
+---
+---
+<div class="symbol-info-grid">
+
+  <!-- TSX-V: FTZ -->
+  <div class="tradingview-widget-container">
+    <div class="tradingview-widget-container__widget"></div>
+    <div class="tradingview-widget-copyright">
+      <a href="https://www.tradingview.com/symbols/TSXV-FTZ/" rel="noopener nofollow" target="_blank">
+        <span class="blue-text">FTZ performance</span>
+      </a>
+      <span class="trademark"> by TradingView</span>
+    </div>
+    <script is:inline type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-symbol-info.js" async>
+      {
+        "symbol": "TSXV:FTZ",
+        "colorTheme": "light",
+        "isTransparent": false,
+        "locale": "en",
+        "width": "100%"
+      }
+    </script>
+  </div>
+
+  <!-- OTC: FTZFF -->
+  <div class="tradingview-widget-container">
+    <div class="tradingview-widget-container__widget"></div>
+    <div class="tradingview-widget-copyright">
+      <a href="https://www.tradingview.com/symbols/OTC-FTZFF/" rel="noopener nofollow" target="_blank">
+        <span class="blue-text">FTZFF performance</span>
+      </a>
+      <span class="trademark"> by TradingView</span>
+    </div>
+    <script is:inline type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-symbol-info.js" async>
+      {
+        "symbol": "OTC:FTZFF",
+        "colorTheme": "light",
+        "isTransparent": false,
+        "locale": "en",
+        "width": "100%"
+      }
+    </script>
+  </div>
+
+</div>
+
+<style>
+  .symbol-info-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-5);
+  }
+
+  .tradingview-widget-container {
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius);
+    overflow: hidden;
+    min-height: 200px;
+  }
+
+  .tradingview-widget-copyright {
+    font-size: 0.75rem;
+    color: var(--color-text-muted);
+    padding: 4px 8px;
+    text-align: right;
+  }
+
+  .tradingview-widget-copyright a {
+    color: var(--color-accent);
+    text-decoration: none;
+  }
+
+  @media (max-width: 700px) {
+    .symbol-info-grid { grid-template-columns: 1fr; }
+  }
+</style>

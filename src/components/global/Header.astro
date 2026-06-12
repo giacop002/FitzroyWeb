@@ -19,8 +19,50 @@ import { siteConfig } from '../../data/siteConfig';
     </a>
 
     <!-- Ticker — centered between logo and nav -->
-    <a href="/investors/stock" class="header-ticker">TSX-V: FTZ  $0.39
- &nbsp;|&nbsp; OTC: FTZFF $0.29</a>
+    <a href="/investors" class="header-ticker" id="header-ticker">
+      <span id="ticker-ftz">TSX-V: FTZ $0.41 CAD</span>
+      &nbsp;|&nbsp;
+      <span id="ticker-ftzff">OTC: FTZFF $0.29 USD</span>
+    </a>
+
+    <script>
+      async function updateTicker() {
+        const CACHE_KEY = 'ftz_ticker_cache';
+        const CACHE_TTL = 60 * 60 * 1000; // 1 hora
+
+        const cached = localStorage.getItem(CACHE_KEY);
+        if (cached) {
+          try {
+            const { ts, ftz, ftzff } = JSON.parse(cached);
+            if (Date.now() - ts < CACHE_TTL) {
+              applyPrices(ftz, ftzff);
+              return;
+            }
+          } catch {}
+        }
+
+        try {
+          const res = await fetch('/api/ticker');
+          if (!res.ok) return;
+          const { ftz, ftzff } = await res.json();
+          if (ftz && ftzff) {
+            localStorage.setItem(CACHE_KEY, JSON.stringify({ ts: Date.now(), ftz, ftzff }));
+            applyPrices(ftz, ftzff);
+          }
+        } catch {
+          // Silently keep hardcoded fallback values
+        }
+      }
+
+      function applyPrices(ftz: number, ftzff: number) {
+        const elFtz   = document.getElementById('ticker-ftz');
+        const elFtzff = document.getElementById('ticker-ftzff');
+        if (elFtz)   elFtz.textContent   = `TSX-V: FTZ $${ftz.toFixed(2)} CAD`;
+        if (elFtzff) elFtzff.textContent = `OTC: FTZFF $${ftzff.toFixed(2)} USD`;
+      }
+
+      updateTicker();
+    </script>
 
     <!-- Desktop nav -->
     <div class="desktop-nav">

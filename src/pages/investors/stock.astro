@@ -1,13 +1,8 @@
 ---
 import InvestorsLayout from '../../layouts/InvestorsLayout.astro';
-import StockWidget from '../../components/investors/StockWidget.svelte';
+import TradingViewWidget from '../../components/investors/TradingViewWidget.astro';
 import ExternalLink from '../../components/ui/ExternalLink.astro';
 import { stockTickers } from '../../data/stockTickers';
-
-const tickers = [
-  { symbol: stockTickers.tsxv.symbol, exchange: stockTickers.tsxv.exchange, label: 'TSX-V' },
-  { symbol: stockTickers.otc.symbol,  exchange: stockTickers.otc.exchange,  label: 'OTC' },
-];
 ---
 
 <InvestorsLayout
@@ -16,28 +11,12 @@ const tickers = [
   pageHeading="Stock Information"
   pageIntro="Fitzroy Minerals Ltd. trades on the TSX Venture Exchange under the symbol FTZ and on the OTC Markets under FTZFF."
 >
-  <div class="stock-grid">
-    <section class="stock-section">
-      <h2 class="stock-exchange">
-        <span class="exchange-badge">TSX-V</span>
-        {stockTickers.tsxv.symbol}
-      </h2>
-      <StockWidget tickers={[tickers[0]]} client:load />
-      <div class="stock-links">
-        <ExternalLink href={stockTickers.tsxv.quoteUrl} label="View on TSX Venture Exchange" />
-      </div>
-    </section>
-
-    <section class="stock-section">
-      <h2 class="stock-exchange">
-        <span class="exchange-badge exchange-badge--otc">OTC</span>
-        {stockTickers.otc.symbol}
-      </h2>
-      <StockWidget tickers={[tickers[1]]} client:load />
-      <div class="stock-links">
-        <ExternalLink href={stockTickers.otc.quoteUrl} label="View on OTC Markets" />
-      </div>
-    </section>
+  <div class="stock-widget-section">
+    <TradingViewWidget />
+    <div class="stock-links">
+      <ExternalLink href={stockTickers.tsxv.quoteUrl} label="TSX Venture Exchange (FTZ)" />
+      <ExternalLink href={stockTickers.otc.quoteUrl} label="OTC Markets (FTZFF)" />
+    </div>
   </div>
 
   <section class="stock-disclaimer">
@@ -51,41 +30,19 @@ const tickers = [
 </InvestorsLayout>
 
 <style>
-  .stock-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: var(--space-8);
-    margin-bottom: var(--space-10);
-  }
-
-  .stock-section {
+  .stock-widget-section {
     display: flex;
     flex-direction: column;
     gap: var(--space-4);
+    margin-bottom: var(--space-10);
   }
 
-  .stock-exchange {
+  .stock-links {
     display: flex;
-    align-items: center;
-    gap: var(--space-3);
-    font-size: 1.375rem;
-    color: var(--color-primary);
+    gap: var(--space-6);
+    font-size: 0.875rem;
+    flex-wrap: wrap;
   }
-
-  .exchange-badge {
-    font-size: 0.75rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.06em;
-    background: var(--color-primary);
-    color: #fff;
-    padding: 0.25em 0.6em;
-    border-radius: var(--radius-sm);
-  }
-
-  .exchange-badge--otc { background: var(--color-text-muted); }
-
-  .stock-links { font-size: 0.875rem; }
 
   .stock-disclaimer {
     padding: var(--space-5);
@@ -97,7 +54,4 @@ const tickers = [
     line-height: 1.65;
   }
 
-  @media (max-width: 700px) {
-    .stock-grid { grid-template-columns: 1fr; }
-  }
 </style>

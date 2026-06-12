@@ -1,0 +1,75 @@
+---
+---
+<div class="single-ticker-grid">
+
+  <!-- TSX-V: FTZ -->
+  <div class="tradingview-widget-container">
+    <div class="tradingview-widget-container__widget"></div>
+    <div class="tradingview-widget-copyright">
+      <a href="https://www.tradingview.com/symbols/TSXV-FTZ/" rel="noopener nofollow" target="_blank">
+        <span class="blue-text">FTZ stock price</span>
+      </a>
+      <span class="trademark"> by TradingView</span>
+    </div>
+    <script is:inline type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-single-quote.js" async>
+      {
+        "symbol": "TSXV:FTZ",
+        "colorTheme": "dark",
+        "isTransparent": false,
+        "locale": "en",
+        "width": "100%"
+      }
+    </script>
+  </div>
+
+  <!-- OTC: FTZFF -->
+  <div class="tradingview-widget-container">
+    <div class="tradingview-widget-container__widget"></div>
+    <div class="tradingview-widget-copyright">
+      <a href="https://www.tradingview.com/symbols/OTC-FTZFF/" rel="noopener nofollow" target="_blank">
+        <span class="blue-text">FTZFF stock price</span>
+      </a>
+      <span class="trademark"> by TradingView</span>
+    </div>
+    <script is:inline type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-single-quote.js" async>
+      {
+        "symbol": "OTC:FTZFF",
+        "colorTheme": "dark",
+        "isTransparent": false,
+        "locale": "en",
+        "width": "100%"
+      }
+    </script>
+  </div>
+
+</div>
+
+<style>
+  .single-ticker-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-8);
+  }
+
+  @media (max-width: 700px) {
+    .single-ticker-grid { grid-template-columns: 1fr; }
+  }
+
+  .tradingview-widget-container {
+    border-radius: var(--radius);
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+  }
+
+  .tradingview-widget-copyright {
+    font-size: 0.625rem;
+    color: rgba(255, 255, 255, 0.3);
+    padding: 1px 6px;
+    text-align: right;
+  }
+
+  .tradingview-widget-copyright a {
+    color: rgba(255, 255, 255, 0.35);
+    text-decoration: none;
+  }
+</style>
