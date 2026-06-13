@@ -14,6 +14,7 @@ interface Props {
   breadcrumbs?: BreadcrumbItem[];
   pageHeading?: string;
   pageIntro?: string;
+  bannerImage?: string;
 }
 
 const {
@@ -23,6 +24,7 @@ const {
   breadcrumbs,
   pageHeading,
   pageIntro,
+  bannerImage,
 } = Astro.props;
 ---
 
@@ -36,7 +38,7 @@ const {
   )}
 
   {(pageHeading || pageIntro) && (
-    <div class="page-header">
+    <div class="page-header" style={bannerImage ? `--banner: url('${bannerImage}')` : ''}>
       <div class="container">
         {pageHeading && <h1 class="page-heading">{pageHeading}</h1>}
         {pageIntro && <p class="page-intro">{pageIntro}</p>}
@@ -59,10 +61,23 @@ const {
   }
 
   .page-header {
-    background: var(--color-primary);
+    position: relative;
+    background: var(--banner, var(--color-primary));
+    background-size: cover;
+    background-position: center;
     color: var(--color-text-inverse);
     padding-block: var(--space-12) var(--space-10);
   }
+
+  .page-header::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: rgba(5, 35, 70, 0.62);
+    pointer-events: none;
+  }
+
+  .page-header .container { position: relative; z-index: 1; }
 
   .page-heading {
     font-size: clamp(1.75rem, 4vw, 2.5rem);

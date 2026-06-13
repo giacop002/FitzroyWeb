@@ -12,13 +12,13 @@ interface Props {
   technicalReportUrl?: string;
 }
 
-const { title, country, region, stage, highlights, technicalReportUrl } = Astro.props;
+const { title, country, region, stage, highlights, coverImage, technicalReportUrl } = Astro.props;
 
 const stageLabel = stage.replace(/-/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase());
 const countryLabel = country === 'chile' ? '🇨🇱 Chile' : '🇦🇷 Argentina';
 ---
 
-<section class="project-hero">
+<section class="project-hero" style={coverImage ? `--cover: url('${coverImage}')` : ''}>
   <div class="project-hero__bg" aria-hidden="true"></div>
   <div class="container project-hero__inner">
     <div class="project-hero__content">
@@ -39,7 +39,7 @@ const countryLabel = country === 'chile' ? '🇨🇱 Chile' : '🇦🇷 Argentin
           <Button
             label="Download Technical Report"
             href={technicalReportUrl}
-            variant="outline"
+            variant="primary"
             external
           />
         </div>
@@ -60,8 +60,18 @@ const countryLabel = country === 'chile' ? '🇨🇱 Chile' : '🇦🇷 Argentin
   .project-hero__bg {
     position: absolute;
     inset: 0;
-    background: linear-gradient(135deg, #0a1a2e 0%, #1a3a5c 50%, #0f2744 100%);
+    background: var(--cover, linear-gradient(135deg, #0a1a2e 0%, #1a3a5c 50%, #0f2744 100%));
+    background-size: cover;
+    background-position: center;
     opacity: 0.9;
+  }
+
+  /* Dark overlay when a real photo is present */
+  .project-hero:has(> .project-hero__bg) .project-hero__bg::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: rgba(5, 20, 45, 0.55);
   }
 
   .project-hero__inner {

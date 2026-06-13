@@ -8,9 +8,10 @@ interface Props {
   description?: string;
   pageHeading?: string;
   pageIntro?: string;
+  bannerImage?: string;
 }
 
-const { title, description, pageHeading, pageIntro } = Astro.props;
+const { title, description, pageHeading, pageIntro, bannerImage } = Astro.props;
 
 const subnavItems = [
   { label: 'Overview',          href: '/investors' },
@@ -42,7 +43,7 @@ const breadcrumbs = Astro.url.pathname === '/investors'
   <SubNav items={subnavItems} />
 
   {(pageHeading || pageIntro) && (
-    <div class="ir-page-header">
+    <div class="ir-page-header" style={bannerImage ? `--banner: url('${bannerImage}')` : ''}>
       <div class="container">
         {pageHeading && <h1 class="ir-page-heading">{pageHeading}</h1>}
         {pageIntro && <p class="ir-page-intro">{pageIntro}</p>}
@@ -65,10 +66,23 @@ const breadcrumbs = Astro.url.pathname === '/investors'
   }
 
   .ir-page-header {
-    background: var(--color-primary);
+    position: relative;
+    background: var(--banner, var(--color-primary));
+    background-size: cover;
+    background-position: center;
     color: var(--color-text-inverse);
     padding-block: var(--space-10);
   }
+
+  .ir-page-header::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: rgba(5, 35, 70, 0.62);
+    pointer-events: none;
+  }
+
+  .ir-page-header .container { position: relative; z-index: 1; }
 
   .ir-page-heading {
     font-size: clamp(1.625rem, 4vw, 2.25rem);
